@@ -1,0 +1,14 @@
+{
+  "name": "line2slack",
+  "version": "0.0.1",
+  "description": "",
+  "main": "functions/index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "otiai10",
+  "license": "MIT",
+  "dependencies": {
+    "request": "^2.85.0"
+  }
+}
