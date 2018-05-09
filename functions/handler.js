@@ -20,10 +20,14 @@ class Handler {
       // TODO: filter event first
       if (!ev.source.userId) return Promise.resolve();
 
+      console.log("[INFO]", "EVENT:", JSON.stringify(ev, null, 1));
+
+      const prof = ev.source.groupId ? `group/${ev.source.groupId}/member/${ev.source.userId}` : `profile/${ev.source.userId}`;
+
       return Promise.resolve()
       .then(() => {
         const options = {
-          uri: 'https://api.line.me/v2/bot/profile/' + ev.source.userId,
+          uri: `https://api.line.me/v2/bot/${prof}`,
           method: 'GET',
           headers: { "Authorization": "Bearer " + this.vars.LINE_CHANNEL_ACCESS_TOKEN }
         };
