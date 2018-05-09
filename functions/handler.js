@@ -1,10 +1,10 @@
 var request = require("request");
 
 class Handler {
-  constructor(action, vars, http) {
-    this.source = action.source;
-    this.destination = action.destination;
-    this.transform = action.transform || new (require("./default-transform"));
+  constructor(rule, vars, http) {
+    this.source = rule.source;
+    this.destination = rule.destination;
+    this.transform = rule.transform || new (require("./default-transform"));
     this.vars = vars;
     this.http = http || request;
   }
