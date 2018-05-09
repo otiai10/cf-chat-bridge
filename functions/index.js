@@ -1,18 +1,12 @@
-var request = require('request');
-var config = require("./config.js");
+var config = require("./config");
+var Handler = require("./handler");
 
-exports.bar = (req, res) => {
-    return request({
-        uri: config.SlackIncomingWebhookURL(req),
-        method: 'POST',
-        json: {
-            text: 'スクリプトからの投稿テスト',
-            username: 'otiai20',
-            icon_url: 'https://avatars1.githubusercontent.com/u/931554?s=460&v=4',
-            channel: 'bot-playground',
-        }
-    }, (slackres) => {
-        console.log(slackres);
-        if (res) res.send(slackres);
+const handlers = config.actions.map(action => new Handler(action, config.vars));
+
+exports.line = (req, response) => {
+    Promise.all(handlers.filter(handler => handler.match(req)).map(handler => handler.handle(req)))
+    .then(results => {
+        if (response) response.send(results);
+        console.log(results);
     });
 };
