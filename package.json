@@ -1,5 +1,5 @@
 {
-  "name": "line2slack",
+  "name": "cloud-chat-bridge",
   "version": "0.0.1",
   "description": "",
   "main": "functions/index.js",
