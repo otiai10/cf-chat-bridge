@@ -1,4 +1,4 @@
-import express from "express";
+import * as express from "express";
 import {Service} from "./service";
 
 export interface Source {

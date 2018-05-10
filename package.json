@@ -4,6 +4,8 @@
   "description": "",
   "main": "lib/index.js",
   "scripts": {
+    "start": "tsc --watch",
+    "build": "tsc -p ./tsconfig.json",
     "test": "tslint ./src/**/*.ts"
   },
   "author": "otiai10",

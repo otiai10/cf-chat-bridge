@@ -1,4 +1,4 @@
-import express from "express";
+import * as express from "express";
 import {createHandler} from "./factory";
 import Handler from "./handler";
 import Rule from "./rule";
