@@ -1,0 +1,4 @@
+export enum Service {
+  LINE  = "LINE",
+  SLACK = "SLACK",
+}

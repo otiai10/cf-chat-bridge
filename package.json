@@ -1,14 +1,19 @@
 {
   "name": "cloud-chat-bridge",
-  "version": "0.0.2",
+  "version": "0.0.7",
   "description": "",
   "main": "lib/index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "tslint ./src/**/*.ts"
   },
   "author": "otiai10",
   "license": "MIT",
   "dependencies": {
-    "request": "^2.85.0"
+    "request-promise": "^4.2.2"
+  },
+  "devDependencies": {
+    "@types/express": "^4.11.1",
+    "tslint": "^5.10.0",
+    "typescript": "^2.8.3"
   }
 }
