@@ -2,6 +2,7 @@ import * as express from "express";
 import {createHandler} from "./factory";
 import Handler from "./handler";
 import Rule from "./rule";
+import Verifier from "./verifier";
 
 export interface IAppOptions {
   vars?: IVariables;
@@ -21,17 +22,29 @@ export default class App {
 
   private vars: IVariables = {};
   private handlers: Handler[] = [];
+  private verifier: Verifier;
 
   constructor(options: IAppOptions) {
     this.vars = options.vars || {};
+    this.verifier = new Verifier(this.vars);
   }
 
   public webhook(rules): (req: express.Request, res: express.Response) => void {
     this.handlers = this.createHandlers(rules);
-    return (req, res) => {
-      this.handlers.filter(h => h.match(req)).map(h => h.handle(req));
-      res.status(200).end();
-    };
+    return this.dispatch.bind(this);
+  }
+
+  private dispatch(req, res): void {
+    if (!this.verifier.verify(req)) {
+      return res.status(400).end();
+    }
+    Promise.all(
+      this.handlers.filter(h => h.match(req)).map(h => h.handle(req)),
+    ).then(results => {
+      res.status(200).json(results);
+    }).catch(err => {
+      res.status(500).json(err);
+    });
   }
 
   private createHandlers(rules: Rule[] = []): Handler[] {

@@ -4,14 +4,12 @@ import Rule from "./rule";
 
 export default interface Handler {
   match(req: express.Request): boolean;
-  verify(req: express.Request): boolean;
-  populate(req: express.Request): express.Request;
   handle(req: express.Request): Promise<any>;
 }
 
 export class HandlerBase {
 
-  private rule: Rule;
+  protected rule: Rule;
   private vars: IVariables;
 
   constructor(rule: Rule, vars: any) {
@@ -20,7 +18,7 @@ export class HandlerBase {
   }
 
   public match(req: express.Request): boolean {
-    return true;
+    return false;
   }
 
   public handle(req: express.Request): Promise<any> {

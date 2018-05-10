@@ -12,7 +12,9 @@ export declare function init(options?: IAppOptions): App;
 export default class App {
     private vars;
     private handlers;
+    private verifier;
     constructor(options: IAppOptions);
     webhook(rules: any): (req: express.Request, res: express.Response) => void;
+    private dispatch(req, res);
     private createHandlers(rules?);
 }
