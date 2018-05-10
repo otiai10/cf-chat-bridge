@@ -5,6 +5,8 @@ Framework for **Google Cloud Functions** to bridge communications in chat servic
 - LINE -> Slack
 - ~~Slack -> LINE~~ <- coming soon
 
+<img width="50%" src="https://user-images.githubusercontent.com/931554/39858312-25bc1a86-5471-11e8-9266-c21e257fb54d.png" />
+
 # Example of your `index.js`
 
 ```javascript
