@@ -24,6 +24,8 @@ export default class API {
     switch (source.type) {
     case types.EventSourceType.GROUP:
       return `${API.baseURL}/v2/bot/group/${source.groupId}/member/${source.userId}`;
+    case types.EventSourceType.ROOM:
+      return `${API.baseURL}/v2/bot/room/${source.roomId}/member/${source.userId}`;
     default:
       return `${API.baseURL}/v2/bot/profile/${source.userId}`;
     }

@@ -23,11 +23,16 @@ export interface Event {
 export interface EventSource {
   type: EventSourceType;
   userId: string;
+
+  // Exists if type is "group"
   groupId?: string;
+  // Exists if type is "room"
+  roomId?: string;
 }
 
 export enum EventSourceType {
   GROUP = "group",
+  ROOM = "room",
 }
 
 export enum EvenType {
