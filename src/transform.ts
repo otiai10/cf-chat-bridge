@@ -1,22 +1,23 @@
+import * as LINE from "./types/LINE";
 
 export class DefaultLineToSlackTransform {
-    public json(ev) {
+    public json(ev: LINE.Event) {
         switch (ev.type) {
-        case "message":
+        case LINE.EvenType.MESSAGE:
         default:
             return this._message(ev);
         }
     }
-    private _message(ev) {
+    private _message(ev: LINE.Event) {
         switch (ev.message.type) {
-        case "sticker":
+        case LINE.MessageType.STICKER:
             return this._message_sticker(ev);
-        case "text":
+        case LINE.MessageType.TEXT:
         default:
             return this._message_text(ev);
         }
     }
-    private _message_text(ev) {
+    private _message_text(ev: LINE.Event) {
         return {
             channel: "bot-playground",
             icon_url: ev.user.pictureUrl,
@@ -24,7 +25,7 @@ export class DefaultLineToSlackTransform {
             username: ev.user.displayName,
         };
     }
-    private _message_sticker(ev) {
+    private _message_sticker(ev: LINE.Event) {
         const url = this._sticker_url(ev);
         return {
             attachments: [{ title: "", image_url: url }],
@@ -33,7 +34,7 @@ export class DefaultLineToSlackTransform {
             username: ev.user.displayName,
         };
     }
-    private _sticker_url(ev): string {
+    private _sticker_url(ev: LINE.Event): string {
         return [
             "https://stickershop.line-scdn.net",
             "stickershop/v1/sticker",

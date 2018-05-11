@@ -7,13 +7,19 @@ import Rule, { Transform } from "./rule";
 import { Service } from "./service";
 import { DefaultLineToSlackTransform } from "./transform";
 
+import LINEAPI from "./api/LINE";
+import SLACKAPI from "./api/Slack";
+
 export default class LineHandler extends HandlerBase implements Handler {
 
   private transform: Transform;
+  private LINEAPI: LINEAPI;
+
   constructor(rule: Rule, vars: IVariables) {
     super(rule, vars);
     this.transform = rule.transform ? rule.transform : new DefaultLineToSlackTransform();
-    // TODO: Dispatch by rule.destination
+    this.LINEAPI = new LINEAPI(vars.LINE_CHANNEL_ACCESS_TOKEN);
+    // TODO: Dispatch commit destinations by rule.destination
   }
 
   /**
@@ -21,6 +27,10 @@ export default class LineHandler extends HandlerBase implements Handler {
    * @param req express.Request
    */
   public match(req: express.Request): boolean {
+
+    /* tslint:disable no-console */
+    console.log("[DEBUG 003]", JSON.stringify(req.body));
+
     if ((req.query.source || "").toUpperCase() !== Service.LINE) {
       return false;
     }
@@ -43,7 +53,7 @@ export default class LineHandler extends HandlerBase implements Handler {
    * @param req express.Request
    */
   private handleAllEvents(req: express.Request): Array<Promise<any>> {
-    return req.body.events.map(event => this.__handle({event, req}));
+    return req.body.events.map(event => this.__handle({payload: event, req}));
   }
 
   /**
@@ -61,7 +71,10 @@ export default class LineHandler extends HandlerBase implements Handler {
    * @param entry Entry
    */
   private populate(entry: Entry): Promise<Entry> {
-    return Promise.resolve(entry);
+    return this.LINEAPI.getSourceProfile(entry.payload.source).then(user => {
+      entry.payload.user = user;
+      return Promise.resolve(entry);
+    });
   }
 
   /**
@@ -77,10 +90,18 @@ export default class LineHandler extends HandlerBase implements Handler {
    * Finally hit external API to send message!
    * @param entry Entry
    */
-  private commit(entry: Entry): Promise<Entry> {
+  private commit(entry: Entry): Promise<Entry[]> {
     if (entry.skip) {
-      return Promise.resolve(entry);
+      return Promise.resolve([entry]);
     }
-    return Promise.resolve(entry);
+    const payload = this.transform.json(entry.payload);
+    return Promise.all(
+      this.rule.destination.channels.map(channel => {
+        return SLACKAPI.sendIncomingWebhook(
+          this.vars.SLACK_INCOMING_WEBHOOK_URL,
+          Object.assign(payload, {channel}),
+        );
+      }),
+    );
   }
 }

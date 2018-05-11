@@ -9,7 +9,7 @@ export default class Verifier {
         this.vars = vars;
     }
     public verify(req: express.Request): boolean {
-        switch (req.query.source.toUpperCase()) {
+        switch ((req.query.source || "").toUpperCase()) {
         case Service.LINE:
         default:
             return this.verifyLine(req);

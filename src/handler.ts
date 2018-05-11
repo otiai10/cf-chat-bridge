@@ -10,7 +10,7 @@ export default interface Handler {
 export class HandlerBase {
 
   protected rule: Rule;
-  private vars: IVariables;
+  protected vars: IVariables;
 
   constructor(rule: Rule, vars: any) {
     this.rule = rule;
@@ -18,11 +18,11 @@ export class HandlerBase {
   }
 
   public match(req: express.Request): boolean {
-    return false;
+    throw new Error("override me");
   }
 
   public handle(req: express.Request): Promise<any> {
-    return Promise.resolve({});
+    throw new Error("override me");
   }
 
 }

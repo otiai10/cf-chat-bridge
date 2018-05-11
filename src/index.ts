@@ -43,6 +43,8 @@ export default class App {
     ).then(results => {
       res.status(200).json(results);
     }).catch(err => {
+      /* tslint:disable no-console */
+      console.error(err);
       res.status(500).json(err);
     });
   }

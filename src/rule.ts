@@ -1,5 +1,6 @@
 import * as express from "express";
 import {Service} from "./service";
+import * as LINE from "./types/LINE";
 
 export interface Source {
   service: Service;
@@ -12,7 +13,7 @@ export interface Destination {
 }
 
 export interface Transform {
-  json: (req: express.Request) => object;
+  json: (payload: LINE.Event|any) => object;
 }
 
 export default interface Rule {
