@@ -14,14 +14,13 @@ const bridge = require("cloud-chat-bridge");
 
 // Your secret variables, see following for details
 const vars = require("./secret.json");
-bridge.init(vars);
+const app = bridge.init({vars});
 
 // Your rules to bridge messages, see following for details
 const rules = require("./rules");
-const endpoint = bridge.hook("LINE").pass(rules).endpoint();
+const endpoint = app.webhook(rules);
 
-// Specify endpoint for Google Cloud Functions.
-exports.webhook_line = endpoint;
+exports.webhook = endpoint;
 ```
 
 # Example rules
