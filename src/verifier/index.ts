@@ -13,6 +13,8 @@ export default class Verifier {
         switch ((req.query.source || "").toUpperCase()) {
         case Service.LINE:
             return this.LINE(req);
+        case Service.SLACK:
+            return this.Slack(req);
         default:
             return false;
         }
@@ -22,5 +24,9 @@ export default class Verifier {
         let hmac: crypto.Hmac = crypto.createHmac("SHA256", this.vars.LINE_CHANNEL_SECRET);
         hmac = hmac.update(new Buffer(JSON.stringify(req.body), "utf8"));
         return req.headers["x-line-signature"] === hmac.digest("base64");
+    }
+
+    private Slack(req: express.Request): boolean {
+        return req.body.token === this.vars.SLACK_OUTGOING_WEBHOOK_TOKEN;
     }
 }

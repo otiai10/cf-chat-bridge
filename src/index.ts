@@ -11,6 +11,7 @@ export interface IVariables {
   LINE_CHANNEL_SECRET?: string;
   LINE_CHANNEL_ACCESS_TOKEN?: string;
   SLACK_INCOMING_WEBHOOK_URL?: string;
+  SLACK_OUTGOING_WEBHOOK_TOKEN?: string;
 }
 
 export function init(options: IAppOptions = {}): App {
