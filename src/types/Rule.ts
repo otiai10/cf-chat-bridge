@@ -11,6 +11,7 @@ export interface Source {
 export interface Destination {
   service: Service;
   channels?: string[];
+  to?: string[];
 }
 
 export default interface Rule {

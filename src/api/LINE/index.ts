@@ -21,17 +21,12 @@ export default class API {
     });
   }
 
-  public pushMessage(): Promise<any> {
+  public pushMessage(to: string, message: types.Message): Promise<any> {
     const uri = `${API.baseURL}/v2/bot/message/push`;
     return request.post(uri, this.auth({
       json: {
-        messages: [
-          {
-            text: "ほげら",
-            type: "text",
-          },
-        ],
-        to: "Rbcd8f918a3d671517e5ab874eca925a7",
+        messages: [message],
+        to,
       },
     }));
   }

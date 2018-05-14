@@ -45,7 +45,7 @@ export enum MessageType {
 }
 
 export interface Message {
-  id: number;
+  id?: number;
   type: MessageType;
 
   // Exists if type is "text"
