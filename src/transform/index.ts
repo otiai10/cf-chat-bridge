@@ -1,4 +1,4 @@
-import * as LINE from "./types/LINE";
+import * as LINE from "../types/LINE";
 
 export class DefaultLineToSlackTransform {
     public json(ev: LINE.Event) {
