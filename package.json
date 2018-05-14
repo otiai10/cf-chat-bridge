@@ -1,6 +1,6 @@
 {
   "name": "cloud-chat-bridge",
-  "version": "0.1.21",
+  "version": "0.1.43",
   "description": "",
   "main": "lib/index.js",
   "scripts": {
