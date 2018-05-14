@@ -11,6 +11,11 @@ import Handler, {HandlerBase} from "./handler";
 import LINEAPI from "../api/LINE";
 import SLACKAPI from "../api/Slack";
 
+/**
+ * LineHandler handles webhooks from LINE,
+ * distributing the entry to other services
+ * according to given "Rule".
+ */
 export default class LineHandler extends HandlerBase implements Handler {
 
   private transform: Transform;
