@@ -1,14 +1,14 @@
 import * as express from "express";
 
-import { IVariables } from ".";
-import Entry from "./entry";
+import { IVariables } from "..";
+import Entry from "../entry";
+import Rule, { Transform } from "../rule";
+import { Service } from "../service";
+import { DefaultLineToSlackTransform } from "../transform";
 import Handler, {HandlerBase} from "./handler";
-import Rule, { Transform } from "./rule";
-import { Service } from "./service";
-import { DefaultLineToSlackTransform } from "./transform";
 
-import LINEAPI from "./api/LINE";
-import SLACKAPI from "./api/Slack";
+import LINEAPI from "../api/LINE";
+import SLACKAPI from "../api/Slack";
 
 export default class LineHandler extends HandlerBase implements Handler {
 

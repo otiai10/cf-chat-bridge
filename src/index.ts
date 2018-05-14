@@ -1,6 +1,5 @@
 import * as express from "express";
-import {createHandler} from "./factory";
-import Handler from "./handler";
+import {createHandler, Handler} from "./handler";
 import Rule from "./rule";
 import Verifier from "./verifier";
 
