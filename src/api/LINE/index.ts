@@ -20,6 +20,22 @@ export default class API {
       return Promise.resolve(JSON.parse(value));
     });
   }
+
+  public pushMessage(): Promise<any> {
+    const uri = `${API.baseURL}/v2/bot/message/push`;
+    return request.post(uri, this.auth({
+      json: {
+        messages: [
+          {
+            text: "ほげら",
+            type: "text",
+          },
+        ],
+        to: "Rbcd8f918a3d671517e5ab874eca925a7",
+      },
+    }));
+  }
+
   private createProfileURI(source: types.EventSource): string {
     switch (source.type) {
     case types.EventSourceType.GROUP:

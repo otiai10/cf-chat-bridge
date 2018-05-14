@@ -44,10 +44,6 @@ export default class LineHandler extends HandlerBase implements Handler {
    * @param req express.Request
    */
   public handle(req: express.Request): Promise<any[]> {
-
-    /* tslint:disable no-console */
-    console.log("[DEBUG 1001]", JSON.stringify(req.body));
-
     if (req.body.events.length === 0) {
       return Promise.reject([]);
     }
