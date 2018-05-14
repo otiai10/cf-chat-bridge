@@ -5,7 +5,7 @@ import { Service } from "../service";
 import Handler from "./handler";
 import LineHandler from "./LINE";
 
-export default function createHandler(rule: Rule, vars: IVariables): Handler {
+export function createHandler(rule: Rule, vars: IVariables): Handler {
   switch ((rule.source.service || "").toUpperCase()) {
     case Service.LINE:
     default:
