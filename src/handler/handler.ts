@@ -1,6 +1,6 @@
 import * as express from "express";
 import { IVariables } from "..";
-import Rule from "../rule";
+import Rule from "../types/Rule";
 
 export default interface Handler {
   match(req: express.Request): boolean;

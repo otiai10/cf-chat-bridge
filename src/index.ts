@@ -1,6 +1,6 @@
 import * as express from "express";
 import {createHandler, Handler} from "./handler";
-import Rule from "./rule";
+import Rule from "./types/Rule";
 import Verifier from "./verifier";
 
 export interface IAppOptions {

@@ -1,7 +1,7 @@
 import * as express from "express";
 import { IVariables } from "..";
-import Rule from "../rule";
-import { Service } from "../service";
+import Rule from "../types/Rule";
+import { Service } from "../types/Service";
 import Handler from "./handler";
 import LineHandler from "./LINE";
 

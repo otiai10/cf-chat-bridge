@@ -1,6 +1,6 @@
 import * as express from "express";
-import {Service} from "./service";
-import * as LINE from "./types/LINE";
+import * as LINE from "./LINE";
+import {Service} from "./Service";
 
 export interface Source {
   service: Service;

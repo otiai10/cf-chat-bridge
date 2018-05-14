@@ -1,10 +1,10 @@
 import * as express from "express";
 
 import { IVariables } from "..";
-import Entry from "../entry";
-import Rule, { Transform } from "../rule";
-import { Service } from "../service";
 import { DefaultLineToSlackTransform } from "../transform";
+import Entry from "../types/Entry";
+import Rule, { Transform } from "../types/Rule";
+import { Service } from "../types/Service";
 import Handler, {HandlerBase} from "./handler";
 
 import LINEAPI from "../api/LINE";

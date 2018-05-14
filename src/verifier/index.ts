@@ -1,7 +1,7 @@
 import * as crypto from "crypto";
 import * as express from "express";
 import { IVariables } from "..";
-import { Service } from "../service";
+import { Service } from "../types/Service";
 
 export default class Verifier {
     private vars: IVariables;

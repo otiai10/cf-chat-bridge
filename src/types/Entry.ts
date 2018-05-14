@@ -1,5 +1,5 @@
 import * as express from "express";
-import * as LINE from "./types/LINE";
+import * as LINE from "./LINE";
 
 export default interface Entry {
     payload: LINE.Event;
