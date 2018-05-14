@@ -1,9 +1,10 @@
 import * as express from "express";
 
 import { IVariables } from "..";
-import { DefaultLineToSlackTransform } from "../transform";
+import Transform from "../transform";
+import LineToSlack from "../transform/LineToSlack";
 import Entry from "../types/Entry";
-import Rule, { Transform } from "../types/Rule";
+import Rule from "../types/Rule";
 import { Service } from "../types/Service";
 import Handler, {HandlerBase} from "./handler";
 
@@ -17,7 +18,7 @@ export default class LineHandler extends HandlerBase implements Handler {
 
   constructor(rule: Rule, vars: IVariables) {
     super(rule, vars);
-    this.transform = rule.transform ? rule.transform : new DefaultLineToSlackTransform();
+    this.transform = rule.transform ? rule.transform : new LineToSlack();
     this.LINEAPI = new LINEAPI(vars.LINE_CHANNEL_ACCESS_TOKEN);
     // TODO: Dispatch commit destinations by rule.destination
   }
