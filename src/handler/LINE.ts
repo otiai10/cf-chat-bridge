@@ -18,12 +18,12 @@ import SLACKAPI from "../api/Slack";
  */
 export default class LineHandler extends HandlerBase implements Handler {
 
-  private transform: Transform;
+  private transformer: Transform;
   private LINEAPI: LINEAPI;
 
   constructor(rule: Rule, vars: IVariables) {
     super(rule, vars);
-    this.transform = rule.transform ? rule.transform : new LineToSlack();
+    this.transformer = rule.transform ? rule.transform : new LineToSlack();
     this.LINEAPI = new LINEAPI(vars.LINE_CHANNEL_ACCESS_TOKEN);
     // TODO: Dispatch commit destinations by rule.destination
   }
@@ -33,10 +33,6 @@ export default class LineHandler extends HandlerBase implements Handler {
    * @param req express.Request
    */
   public match(req: express.Request): boolean {
-
-    /* tslint:disable no-console */
-    console.log("[DEBUG 003]", JSON.stringify(req.body));
-
     if ((req.query.source || "").toUpperCase() !== Service.LINE) {
       return false;
     }
@@ -48,6 +44,10 @@ export default class LineHandler extends HandlerBase implements Handler {
    * @param req express.Request
    */
   public handle(req: express.Request): Promise<any[]> {
+
+    /* tslint:disable no-console */
+    console.log("[DEBUG 1001]", JSON.stringify(req.body));
+
     if (req.body.events.length === 0) {
       return Promise.reject([]);
     }
@@ -69,6 +69,7 @@ export default class LineHandler extends HandlerBase implements Handler {
   private __handle(entry: Entry): Promise<any> {
     return this.populate(entry)
     .then(this.filter.bind(this))
+    .then(this.transform.bind(this))
     .then(this.commit.bind(this));
   }
 
@@ -92,6 +93,16 @@ export default class LineHandler extends HandlerBase implements Handler {
     return Promise.resolve(entry);
   }
 
+  private transform(entry: Entry): Promise<Entry> {
+    if (entry.skip) {
+      return Promise.resolve(entry);
+    }
+    return this.transformer.json(entry.payload).then(transformed => {
+      entry.transformed = transformed;
+      return Promise.resolve(entry);
+    });
+  }
+
   /**
    * Finally hit external API to send message!
    * @param entry Entry
@@ -100,12 +111,11 @@ export default class LineHandler extends HandlerBase implements Handler {
     if (entry.skip) {
       return Promise.resolve([entry]);
     }
-    const payload = this.transform.json(entry.payload);
     return Promise.all(
-      this.rule.destination.channels.map(channel => {
+      (this.rule.destination.channels || []).map(channel => {
         return SLACKAPI.sendIncomingWebhook(
           this.vars.SLACK_INCOMING_WEBHOOK_URL,
-          Object.assign(payload, {channel}),
+          Object.assign(entry.transformed, {channel}),
         );
       }),
     );

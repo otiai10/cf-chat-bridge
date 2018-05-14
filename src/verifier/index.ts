@@ -12,8 +12,9 @@ export default class Verifier {
     public verify(req: express.Request): boolean {
         switch ((req.query.source || "").toUpperCase()) {
         case Service.LINE:
-        default:
             return this.LINE(req);
+        default:
+            return false;
         }
     }
 
