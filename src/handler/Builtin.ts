@@ -1,27 +1,46 @@
 import * as express from "express";
 import LINEAPI from "../api/LINE";
+import SLACKAPI from "../api/Slack";
 import Entry from "../types/Entry";
 import * as LINE from "../types/LINE";
 import {Service} from "../types/Service";
 import Handler, {HandlerBase} from "./handler";
 
+/**
+ * BuiltinHandler handles ANY webhook requests which are required by services.
+ * For example:
+ *     - Checking LINE Chat ID, because LINE can't provide a way to get Group Name by ID
+ *     - Verify Slack app Event API endpoint, because Slack sends "challenge" when registering subscribe endpoint.
+ * These webhooks should be handled no matter what Rules user defined, therefore
+ * this handler handles these webhooks.
+ */
 export default class BuiltinHandler extends HandlerBase implements Handler {
   private LINEAPI: LINEAPI;
+  private SLACKAPI: SLACKAPI;
   constructor(rule, vars) {
     super(rule, vars);
     this.LINEAPI = new LINEAPI(this.vars.LINE_CHANNEL_ACCESS_TOKEN);
+    this.SLACKAPI = new SLACKAPI();
   }
   public match(req: express.Request): boolean {
-    if (req.query.source === Service.LINE) {
+    switch (req.query.source) {
+    case Service.LINE:
       return true;
+    case Service.SLACK:
+      return true;
+    default:
+      return false;
     }
-    return false;
   }
   public handle(req: express.Request): Promise<any> {
-    if (req.query.source === Service.LINE) {
+    switch (req.query.source) {
+    case Service.LINE:
       return this.handleLINE(req);
+    case Service.SLACK:
+      return this.handleSlack(req);
+    default:
+      return Promise.resolve({});
     }
-    return Promise.resolve({});
   }
 
   private handleLINE(req: express.Request): Promise<any> {
@@ -56,4 +75,10 @@ export default class BuiltinHandler extends HandlerBase implements Handler {
     );
   }
 
+  private handleSlack(req: express.Request): Promise<any> {
+    if (req.body && req.body.type === "url_verification") {
+      return Promise.resolve({challenge: req.body.challenge});
+    }
+    return Promise.resolve({});
+  }
 }

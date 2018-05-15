@@ -42,7 +42,11 @@ export default class App {
     Promise.all(
       this.handlers.filter(h => h.match(req)).map(h => h.handle(req)),
     ).then(results => {
-      res.status(200).json(results);
+      if (results.length === 1) {
+        res.status(200).json(results[0]);
+      } else {
+        res.status(200).json(results);
+      }
     }).catch(err => {
       /* tslint:disable no-console */
       console.error(err);

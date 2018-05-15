@@ -21,6 +21,10 @@ export default class SlackHandler extends HandlerBase implements Handler {
     if (req.query.source !== Service.SLACK) {
       return false;
     }
+    // This is special request from Slack
+    if (req.body.type === "url_verification") {
+      return false;
+    }
     // Ignore if it's entry from Slack Bot
     if (req.body.user_name === "slackbot") {
       return false;

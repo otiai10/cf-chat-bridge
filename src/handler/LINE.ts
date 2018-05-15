@@ -92,8 +92,6 @@ export default class LineHandler extends HandlerBase implements Handler {
     } else if (typeof this.rule.source.group === "string") {
       entry.skip = (this.rule.source.group !== entry.payload.source.groupId);
     }
-    /* tslint:disable no-console */
-    console.log("[5001]", this.rule.source.group, entry.payload.source.groupId, entry.skip);
     return Promise.resolve(entry);
   }
 
