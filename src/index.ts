@@ -1,5 +1,6 @@
 import * as express from "express";
 import {createHandler, Handler} from "./handler";
+import BuiltinHandler from "./handler/Builtin";
 import Rule from "./types/Rule";
 import Verifier from "./verifier";
 
@@ -50,9 +51,9 @@ export default class App {
   }
 
   private createHandlers(rules: Rule[] = []): Handler[] {
-    return rules.map<Handler>(rule => {
+    return [...rules.map<Handler>(rule => {
       return createHandler(rule, this.vars);
-    });
+    }), new BuiltinHandler({}, this.vars)];
   }
 
 }
