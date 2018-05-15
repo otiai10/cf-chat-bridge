@@ -83,9 +83,17 @@ export default class LineHandler extends HandlerBase implements Handler {
   /**
    * filter if the group name is not the target specified in Rule.
    * @param entry Entry
+   * TODO: The name "skip" is a kind of negative flag, it's anti-pattern of software.
    */
   private filter(entry: Entry): Promise<Entry> {
-    // TODO: entry.skip = true
+    entry.skip = true;
+    if (this.rule.source.group instanceof RegExp) {
+      entry.skip = !this.rule.source.group.test(entry.payload.source.groupId);
+    } else if (typeof this.rule.source.group === "string") {
+      entry.skip = (this.rule.source.group !== entry.payload.source.groupId);
+    }
+    /* tslint:disable no-console */
+    console.log("[5001]", this.rule.source.group, entry.payload.source.groupId, entry.skip);
     return Promise.resolve(entry);
   }
 
