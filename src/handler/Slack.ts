@@ -32,7 +32,7 @@ export default class SlackHandler extends HandlerBase implements Handler {
     return true;
   }
   public handle(req: express.Request): Promise<any[]> {
-    const entry = {req, payload: req.body as Slack.Event} as Entry;
+    const entry = {req, payload: req.body as Slack.Callback} as Entry;
     return this.transform(entry).then(ent => {
       return this.distribute(ent);
     });

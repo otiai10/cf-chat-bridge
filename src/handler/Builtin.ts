@@ -16,11 +16,9 @@ import Handler, {HandlerBase} from "./handler";
  */
 export default class BuiltinHandler extends HandlerBase implements Handler {
   private LINEAPI: LINEAPI;
-  private SLACKAPI: SLACKAPI;
   constructor(rule, vars) {
     super(rule, vars);
     this.LINEAPI = new LINEAPI(this.vars.LINE_CHANNEL_ACCESS_TOKEN);
-    this.SLACKAPI = new SLACKAPI();
   }
   public match(req: express.Request): boolean {
     switch (req.query.source) {

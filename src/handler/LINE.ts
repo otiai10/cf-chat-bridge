@@ -20,11 +20,13 @@ export default class LineHandler extends HandlerBase implements Handler {
 
   private transformer: Transform;
   private LINEAPI: LINEAPI;
+  private SLACKAPI: SLACKAPI;
 
   constructor(rule: Rule, vars: IVariables) {
     super(rule, vars);
     this.transformer = rule.transform ? rule.transform : new LineToSlack();
     this.LINEAPI = new LINEAPI(vars.LINE_CHANNEL_ACCESS_TOKEN);
+    this.SLACKAPI = new SLACKAPI(vars.SLACK_APP_BOT_ACCESS_TOKEN);
     // TODO: Dispatch commit destinations by rule.destination
   }
 
@@ -86,6 +88,8 @@ export default class LineHandler extends HandlerBase implements Handler {
    * TODO: The name "skip" is a kind of negative flag, it's anti-pattern of software.
    */
   private filter(entry: Entry): Promise<Entry> {
+    /* tslint:disable no-console */
+    console.log("[10001]", JSON.stringify(entry.payload));
     entry.skip = true;
     if (this.rule.source.group instanceof RegExp) {
       entry.skip = !this.rule.source.group.test(entry.payload.source.groupId);
@@ -115,10 +119,8 @@ export default class LineHandler extends HandlerBase implements Handler {
     }
     return Promise.all(
       (this.rule.destination.channels || []).map(channel => {
-        return SLACKAPI.sendIncomingWebhook(
-          this.vars.SLACK_INCOMING_WEBHOOK_URL,
-          Object.assign(entry.transformed, {channel}),
-        );
+        // TODO: Use channel and transformed.
+        return this.SLACKAPI.postMessage();
       }),
     );
   }
