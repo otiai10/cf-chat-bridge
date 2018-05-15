@@ -4,7 +4,7 @@ import Transform from "./index";
 export default class LineToSlack extends Transform {
     public json(ev: LINE.Event): Promise<any> {
         switch (ev.type) {
-        case LINE.EvenType.MESSAGE:
+        case LINE.EventType.MESSAGE:
         default:
             return this._message(ev);
         }
