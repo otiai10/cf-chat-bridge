@@ -14,6 +14,6 @@ export function createHandler(rule: Rule, vars: IVariables): Handler {
     case Service.SLACK:
       return new SlackHandler(rule, vars);
     default:
-      return new UnknownHandler(rule, vars);
+      return new UnknownHandler();
   }
 }

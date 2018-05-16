@@ -3,9 +3,9 @@ import * as Slack from "../types/Slack";
 import Transform from "./index";
 
 export default class SlackToLine extends Transform {
-    public json(ev: Slack.Event): Promise<LINE.Message> {
+    public json(payload: Slack.Callback): Promise<LINE.Message> {
         return Promise.resolve({
-            text: ev.text,
+            text: payload.event.text || "UNDEFINED",
             type: "text",
         } as LINE.Message);
     }

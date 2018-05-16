@@ -1,6 +1,6 @@
 {
-  "name": "cloud-chat-bridge",
-  "version": "0.1.43",
+  "name": "cf-chat-bridge",
+  "version": "0.2.0",
   "description": "",
   "main": "lib/index.js",
   "scripts": {
@@ -10,7 +10,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/otiai10/cloud-chat-bridge"
+    "url": "https://github.com/otiai10/cf-chat-bridge"
   },
   "author": "otiai10",
   "license": "MIT",

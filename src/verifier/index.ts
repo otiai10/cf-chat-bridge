@@ -27,6 +27,9 @@ export default class Verifier {
     }
 
     private Slack(req: express.Request): boolean {
-        return req.body.token === this.vars.SLACK_OUTGOING_WEBHOOK_TOKEN;
+        if (req.body.type === "url_verification") {
+            return true;
+        }
+        return req.body.token === this.vars.SLACK_APP_VERIFICATION_TOKEN;
     }
 }

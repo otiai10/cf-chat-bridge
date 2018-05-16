@@ -1,5 +1,6 @@
 import * as express from "express";
 import {createHandler, Handler} from "./handler";
+import BuiltinHandler from "./handler/Builtin";
 import Rule from "./types/Rule";
 import Verifier from "./verifier";
 
@@ -10,8 +11,8 @@ export interface IAppOptions {
 export interface IVariables {
   LINE_CHANNEL_SECRET?: string;
   LINE_CHANNEL_ACCESS_TOKEN?: string;
-  SLACK_INCOMING_WEBHOOK_URL?: string;
-  SLACK_OUTGOING_WEBHOOK_TOKEN?: string;
+  SLACK_APP_VERIFICATION_TOKEN?: string;
+  SLACK_APP_BOT_ACCESS_TOKEN?: string;
 }
 
 export function init(options: IAppOptions = {}): App {
@@ -41,7 +42,11 @@ export default class App {
     Promise.all(
       this.handlers.filter(h => h.match(req)).map(h => h.handle(req)),
     ).then(results => {
-      res.status(200).json(results);
+      if (results.length === 1) {
+        res.status(200).json(results[0]);
+      } else {
+        res.status(200).json(results);
+      }
     }).catch(err => {
       /* tslint:disable no-console */
       console.error(err);
@@ -50,9 +55,9 @@ export default class App {
   }
 
   private createHandlers(rules: Rule[] = []): Handler[] {
-    return rules.map<Handler>(rule => {
+    return [...rules.map<Handler>(rule => {
       return createHandler(rule, this.vars);
-    });
+    }), new BuiltinHandler({}, this.vars)];
   }
 
 }

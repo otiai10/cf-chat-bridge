@@ -8,7 +8,7 @@ export interface Event {
 
   // Original properties
   source: EventSource;
-  type: EvenType;
+  type: EventType;
   replyToken: string;
   timestamp: number;
 
@@ -35,7 +35,7 @@ export enum EventSourceType {
   ROOM = "room",
 }
 
-export enum EvenType {
+export enum EventType {
   MESSAGE = "message",
 }
 
