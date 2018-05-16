@@ -1,9 +1,10 @@
 {
   "name": "cf-chat-bridge",
-  "version": "0.2.0",
+  "version": "0.2.7",
   "description": "",
   "main": "lib/index.js",
   "scripts": {
+    "up": "rm -rf lib && npm run build && npm publish",
     "start": "tsc --watch",
     "build": "tsc -p ./tsconfig.json",
     "test": "tslint ./src/**/*.ts && jest"
