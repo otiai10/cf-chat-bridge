@@ -12,10 +12,12 @@ export default class API {
   public postMessage(): Promise<any> {
     const uri = `${API.baseURL}/chat.postMessage`;
     return request.post(uri, {
+      headers: {
+        Authorization: `Bearer ${this.accessToken}`,
+      },
       json: {
-        channel: "bot-dev-2x",
+        channel: "bot-dev-3x",
         text: "This is test",
-        token: this.accessToken,
       },
     });
   }
