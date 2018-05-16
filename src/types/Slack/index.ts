@@ -30,6 +30,10 @@ export interface Event {
   event_ts?: number;
   channel_type?: ChannelType;
 
+  // From integration
+  bot_id?: string;
+  subtype?: Subtype;
+
   // For chat.postMessage
   attachments?: Attachment[];
   icon_emoji?: string;
@@ -57,4 +61,11 @@ export interface Attachment {
   title?: string;
   image_url?: string;
   text?: string;
+}
+
+/**
+ * https://api.slack.com/events/message
+ */
+export enum Subtype {
+  BOTMESSAGE = "bot_message",
 }

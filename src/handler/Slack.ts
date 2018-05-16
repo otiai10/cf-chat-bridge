@@ -26,8 +26,8 @@ export default class SlackHandler extends Template implements Handler {
     if (req.body.type === "url_verification") {
       return false;
     }
-    // Ignore if it's entry from Slack Bot
-    if (req.body.user_name === "slackbot") {
+    const callback = req.body as Slack.Callback;
+    if (callback.event.subtype === Slack.Subtype.BOTMESSAGE) {
       return false;
     }
     return true;
