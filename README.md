@@ -3,7 +3,7 @@
 Framework for **Google Cloud Functions** to bridge communications in chat services, such as
 
 - LINE -> Slack
-- ~~Slack -> LINE~~ <- coming soon
+- Slack -> LINE
 
 <img width="50%" src="https://user-images.githubusercontent.com/931554/39858312-25bc1a86-5471-11e8-9266-c21e257fb54d.png" />
 
@@ -20,7 +20,7 @@ const app = bridge.init({vars});
 const rules = require("./rules");
 const endpoint = app.webhook(rules);
 
-exports.webhook = endpoint;
+exports.foobar = endpoint;
 ```
 
 # Example rules
@@ -47,9 +47,10 @@ module.exports = [
 
 ```json
 {
-  "LINE_CHANNEL_SECRET": "XXXXXX",
-  "LINE_CHANNEL_ACCESS_TOKEN": "XXX",
-  "SLACK_INCOMING_WEBHOOK_URL": "https://hooks.slack.com/services/XXX/ZZZ"
+  "LINE_CHANNEL_SECRET": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+  "LINE_CHANNEL_ACCESS_TOKEN": "xxxxxxxxxxxxxxxxxxxxxxxx",
+  "SLACK_APP_VERIFICATION_TOKEN": "xxxxxxxxxxxxxxxxxxxxx",
+  "SLACK_APP_BOT_ACCESS_TOKEN": "xoxb-xxxxxxxxxxxxxxxxxx"
 }
 ```
 
@@ -57,13 +58,15 @@ module.exports = [
   - can be get when you create provider and bot channel in LINE developer console.
 - `LINE_CHANNEL_ACCESS_TOKEN`
   - can be created when you create provider and bot channel in LINE developer console.
-- `SLACK_INCOMING_WEBHOOK_URL`
-  - can be created when you enable `incoming-webhook` in Slack console.
+- `SLACK_APP_VERIFICATION_TOKEN`
+  - is created when you create an App on your slack team.
+- `SLACK_APP_BOT_ACCESS_TOKEN`
+  - is created when you create a bot user belonging to the App you created.
 
 # How to deploy your `index.js` to Google Cloud Functions
 
 ```sh
-gcloud functions deploy webhook_line --trigger-http
+gcloud functions deploy foobar --trigger-http
 ```
 
 See links below for more information
