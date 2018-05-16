@@ -1,6 +1,6 @@
-# cloud-chat-bridge
+# Chat Bridge by Google Cloud Functions
 
-Framework for **Google Cloud Functions** to bridge communications in chat services to others, such as
+Framework for **Google Cloud Functions** to bridge communications in chat services, such as
 
 - LINE -> Slack
 - ~~Slack -> LINE~~ <- coming soon
@@ -10,7 +10,7 @@ Framework for **Google Cloud Functions** to bridge communications in chat servic
 # Example of your `index.js`
 
 ```javascript
-const bridge = require("cloud-chat-bridge");
+const bridge = require("cf-chat-bridge");
 
 // Your secret variables, see following for details
 const vars = require("./secret.json");
