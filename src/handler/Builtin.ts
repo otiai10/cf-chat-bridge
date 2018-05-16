@@ -1,10 +1,12 @@
 import * as express from "express";
+import {IVariables} from "..";
 import LINEAPI from "../api/LINE";
 import SLACKAPI from "../api/Slack";
 import Entry from "../types/Entry";
 import * as LINE from "../types/LINE";
+import Rule from "../types/Rule";
 import {Service} from "../types/Service";
-import Handler, {HandlerBase} from "./handler";
+import Handler from "./handler";
 
 /**
  * BuiltinHandler handles ANY webhook requests which are required by services.
@@ -14,10 +16,13 @@ import Handler, {HandlerBase} from "./handler";
  * These webhooks should be handled no matter what Rules user defined, therefore
  * this handler handles these webhooks.
  */
-export default class BuiltinHandler extends HandlerBase implements Handler {
+export default class BuiltinHandler implements Handler {
+  private rule: Rule;
+  private vars: IVariables;
   private LINEAPI: LINEAPI;
   constructor(rule, vars) {
-    super(rule, vars);
+    this.rule = rule;
+    this.vars = vars;
     this.LINEAPI = new LINEAPI(this.vars.LINE_CHANNEL_ACCESS_TOKEN);
   }
   public match(req: express.Request): boolean {
@@ -30,19 +35,19 @@ export default class BuiltinHandler extends HandlerBase implements Handler {
       return false;
     }
   }
-  public handle(req: express.Request): Promise<any> {
+  public handle(req: express.Request): Array<Promise<any>> {
     switch (req.query.source) {
     case Service.LINE:
       return this.handleLINE(req);
     case Service.SLACK:
       return this.handleSlack(req);
     default:
-      return Promise.resolve({});
+      return [Promise.resolve({})];
     }
   }
 
-  private handleLINE(req: express.Request): Promise<any> {
-    return Promise.all(req.body.events.map(e => this.handleLINEEntry({req, payload: e})));
+  private handleLINE(req: express.Request): Array<Promise<any>> {
+    return req.body.events.map(e => this.handleLINEEntry({req, payload: e}));
   }
 
   private handleLINEEntry(entry: Entry): Promise<any> {
@@ -73,10 +78,10 @@ export default class BuiltinHandler extends HandlerBase implements Handler {
     );
   }
 
-  private handleSlack(req: express.Request): Promise<any> {
+  private handleSlack(req: express.Request): Array<Promise<any>> {
     if (req.body && req.body.type === "url_verification") {
-      return Promise.resolve({challenge: req.body.challenge});
+      return [Promise.resolve({challenge: req.body.challenge})];
     }
-    return Promise.resolve({});
+    return [Promise.resolve({})];
   }
 }

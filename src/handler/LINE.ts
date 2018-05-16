@@ -6,7 +6,7 @@ import LineToSlack from "../transform/LineToSlack";
 import Entry from "../types/Entry";
 import Rule from "../types/Rule";
 import { Service } from "../types/Service";
-import Handler, {HandlerBase} from "./handler";
+import Handler, {Template} from "./handler";
 
 import * as LINE from "../types/LINE";
 import * as Slack from "../types/Slack";
@@ -19,7 +19,7 @@ import SLACKAPI from "../api/Slack";
  * distributing the entry to other services
  * according to given "Rule".
  */
-export default class LineHandler extends HandlerBase implements Handler {
+export default class LineHandler extends Template implements Handler {
 
   private transformer: Transform;
   private LINEAPI: LINEAPI;
@@ -44,41 +44,11 @@ export default class LineHandler extends HandlerBase implements Handler {
     return true;
   }
 
-  /**
-   * The main interface to be hit by Webhook.
-   * @param req express.Request
-   */
-  public handle(req: express.Request): Promise<any[]> {
-    if (req.body.events.length === 0) {
-      return Promise.reject([]);
-    }
-    return Promise.all(this.handleAllEvents(req));
+  protected entries(req: express.Request): Entry[] {
+    return req.body.events.map(event => ({payload: event, req}));
   }
 
-  /**
-   * handleAllEvents handles all the events included inside the request.
-   * @param req express.Request
-   */
-  private handleAllEvents(req: express.Request): Array<Promise<any>> {
-    return req.body.events.map(event => this.__handle({payload: event, req}));
-  }
-
-  /**
-   * __handle handles each event as an Entry.
-   * @param entry Entry
-   */
-  private __handle(entry: Entry): Promise<any> {
-    return this.populate(entry)
-    .then(this.filter.bind(this))
-    .then(this.transform.bind(this))
-    .then(this.commit.bind(this));
-  }
-
-  /**
-   * populate user profile and group infromation to Event.
-   * @param entry Entry
-   */
-  private populate(entry: Entry): Promise<Entry> {
+  protected populate(entry: Entry): Promise<Entry> {
     const payload = entry.payload as LINE.Event;
     return this.LINEAPI.getSourceProfile(payload.source).then(user => {
       payload.user = user;
@@ -87,12 +57,7 @@ export default class LineHandler extends HandlerBase implements Handler {
     });
   }
 
-  /**
-   * filter if the group name is not the target specified in Rule.
-   * @param entry Entry
-   * TODO: The name "skip" is a kind of negative flag, it's anti-pattern of software.
-   */
-  private filter(entry: Entry): Promise<Entry> {
+  protected filter(entry: Entry): Promise<Entry> {
     /* tslint:disable no-console */
     console.log("[LINE][0000]", JSON.stringify(entry.payload));
     const payload = entry.payload as LINE.Event;
@@ -105,7 +70,7 @@ export default class LineHandler extends HandlerBase implements Handler {
     return Promise.resolve(entry);
   }
 
-  private transform(entry: Entry): Promise<Entry> {
+  protected transform(entry: Entry): Promise<Entry> {
     if (entry.skip) {
       return Promise.resolve(entry);
     }
@@ -115,11 +80,7 @@ export default class LineHandler extends HandlerBase implements Handler {
     });
   }
 
-  /**
-   * Finally hit external API to send message!
-   * @param entry Entry
-   */
-  private commit(entry: Entry): Promise<Entry[]> {
+  protected distribute(entry: Entry): Promise<Entry[]> {
     if (entry.skip) {
       return Promise.resolve([entry]);
     }

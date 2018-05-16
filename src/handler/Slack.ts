@@ -5,9 +5,9 @@ import SlackToLine from "../transform/SlackToLine";
 import Entry from "../types/Entry";
 import {Service} from "../types/Service";
 import * as Slack from "../types/Slack";
-import Handler, { HandlerBase } from "./handler";
+import Handler, {Template} from "./handler";
 
-export default class SlackHandler extends HandlerBase implements Handler {
+export default class SlackHandler extends Template implements Handler {
 
   private LINEAPI: LINEAPI;
   private transformer: Transform;
@@ -16,6 +16,7 @@ export default class SlackHandler extends HandlerBase implements Handler {
     this.LINEAPI = new LINEAPI(this.vars.LINE_CHANNEL_ACCESS_TOKEN);
     this.transformer = rule.transform ? rule.transform : new SlackToLine();
   }
+
   public match(req: express.Request): boolean {
     // Ignore if it's NOT from Slack
     if (req.query.source !== Service.SLACK) {
@@ -31,13 +32,18 @@ export default class SlackHandler extends HandlerBase implements Handler {
     }
     return true;
   }
-  public handle(req: express.Request): Promise<any[]> {
+
+  protected entries(req: express.Request): Entry[] {
     const entry = {req, payload: req.body as Slack.Callback} as Entry;
-    return this.transform(entry).then(ent => {
-      return this.distribute(ent);
-    });
+    return [entry];
   }
-  private transform(entry: Entry): Promise<Entry> {
+  protected populate(entry: Entry): Promise<Entry> {
+    return Promise.resolve(entry);
+  }
+  protected filter(entry: Entry): Promise<Entry> {
+    return Promise.resolve(entry);
+  }
+  protected transform(entry: Entry): Promise<Entry> {
     /* tslint:disable no-console */
     console.log("[SLACK][0000]", JSON.stringify(entry.payload));
     return this.transformer.json(entry.payload).then(transformed => {
@@ -45,7 +51,7 @@ export default class SlackHandler extends HandlerBase implements Handler {
       return Promise.resolve(entry);
     });
   }
-  private distribute(entry: Entry): Promise<Entry[]> {
+  protected distribute(entry: Entry): Promise<Entry[]> {
     return Promise.all(this.rule.destination.to.map(to => {
       return this.LINEAPI.pushMessage(to, entry.transformed);
     }));
