@@ -8,6 +8,9 @@ import Rule from "../types/Rule";
 import { Service } from "../types/Service";
 import Handler, {HandlerBase} from "./handler";
 
+import * as LINE from "../types/LINE";
+import * as Slack from "../types/Slack";
+
 import LINEAPI from "../api/LINE";
 import SLACKAPI from "../api/Slack";
 
@@ -76,8 +79,10 @@ export default class LineHandler extends HandlerBase implements Handler {
    * @param entry Entry
    */
   private populate(entry: Entry): Promise<Entry> {
-    return this.LINEAPI.getSourceProfile(entry.payload.source).then(user => {
-      entry.payload.user = user;
+    const payload = entry.payload as LINE.Event;
+    return this.LINEAPI.getSourceProfile(payload.source).then(user => {
+      payload.user = user;
+      entry.payload = payload;
       return Promise.resolve(entry);
     });
   }
@@ -89,13 +94,14 @@ export default class LineHandler extends HandlerBase implements Handler {
    */
   private filter(entry: Entry): Promise<Entry> {
     /* tslint:disable no-console */
-    console.log("[10001]", JSON.stringify(entry.payload));
-    entry.skip = true;
-    if (this.rule.source.group instanceof RegExp) {
-      entry.skip = !this.rule.source.group.test(entry.payload.source.groupId);
-    } else if (typeof this.rule.source.group === "string") {
-      entry.skip = (this.rule.source.group !== entry.payload.source.groupId);
-    }
+    console.log("[0000]", JSON.stringify(entry.payload));
+    const payload = entry.payload as LINE.Event;
+    // entry.skip = true;
+    // if (this.rule.source.group instanceof RegExp) {
+    //   entry.skip = !this.rule.source.group.test(payload.source.groupId);
+    // } else if (typeof this.rule.source.group === "string") {
+    //   entry.skip = (this.rule.source.group !== payload.source.groupId);
+    // }
     return Promise.resolve(entry);
   }
 
@@ -117,10 +123,11 @@ export default class LineHandler extends HandlerBase implements Handler {
     if (entry.skip) {
       return Promise.resolve([entry]);
     }
+    const message = entry.transformed as Slack.Event;
     return Promise.all(
       (this.rule.destination.channels || []).map(channel => {
-        // TODO: Use channel and transformed.
-        return this.SLACKAPI.postMessage();
+        const m = Object.assign(message, {channel});
+        return this.SLACKAPI.postMessage(m);
       }),
     );
   }

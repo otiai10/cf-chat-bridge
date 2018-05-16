@@ -22,13 +22,20 @@ export enum CallbackType {
 }
 
 export interface Event {
-  type: EventType;
+  type?: EventType;
   user?: string | object;
   text?: string;
-  ts: number;
+  ts?: number;
   channel: string;
-  event_ts: number;
-  channel_type: ChannelType;
+  event_ts?: number;
+  channel_type?: ChannelType;
+
+  // For chat.postMessage
+  attachments?: Attachment[];
+  icon_emoji?: string;
+  icon_url?: string;
+  link_names?: boolean;
+  username?: string;
 }
 
 export enum ChannelType {
@@ -41,4 +48,13 @@ export enum ChannelType {
  */
 export enum EventType {
   MESSAGE = "message",
+}
+
+/**
+ * https://api.slack.com/docs/message-attachments
+ */
+export interface Attachment {
+  title?: string;
+  image_url?: string;
+  text?: string;
 }

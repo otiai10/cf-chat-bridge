@@ -30,10 +30,6 @@ export default class Verifier {
         if (req.body.type === "url_verification") {
             return true;
         }
-        /* tslint:disable no-console */
-        console.log("[7001]", JSON.stringify(req.body));
-        console.log("[7002]", req.body.token, this.vars.SLACK_APP_VERIFICATION_TOKEN);
-        console.log("[7003]", req.body.token === this.vars.SLACK_APP_VERIFICATION_TOKEN);
         return req.body.token === this.vars.SLACK_APP_VERIFICATION_TOKEN;
     }
 }
