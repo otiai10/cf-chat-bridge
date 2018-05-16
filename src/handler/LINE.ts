@@ -94,7 +94,7 @@ export default class LineHandler extends HandlerBase implements Handler {
    */
   private filter(entry: Entry): Promise<Entry> {
     /* tslint:disable no-console */
-    console.log("[0000]", JSON.stringify(entry.payload));
+    console.log("[LINE][0000]", JSON.stringify(entry.payload));
     const payload = entry.payload as LINE.Event;
     // entry.skip = true;
     // if (this.rule.source.group instanceof RegExp) {

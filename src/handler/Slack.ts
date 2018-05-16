@@ -38,6 +38,8 @@ export default class SlackHandler extends HandlerBase implements Handler {
     });
   }
   private transform(entry: Entry): Promise<Entry> {
+    /* tslint:disable no-console */
+    console.log("[SLACK][0000]", JSON.stringify(entry.payload));
     return this.transformer.json(entry.payload).then(transformed => {
       entry.transformed = transformed;
       return Promise.resolve(entry);
