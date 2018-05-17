@@ -11,6 +11,9 @@ export interface Callback {
   event_time?: number;
   authed_users?: string[];
   event: Event;
+
+  // WARNING: This is populated property
+  channel?: Channel;
 }
 
 /**
@@ -68,4 +71,36 @@ export interface Attachment {
  */
 export enum Subtype {
   BOTMESSAGE = "bot_message",
+}
+
+export interface Channel {
+  id: string;
+  name: string;
+  name_normalized: string;
+  is_channel: boolean;
+  created: number;
+  is_archived: boolean;
+  is_general: boolean;
+  unlinked: number;
+  creator: string;
+  is_shared: boolean;
+  is_org_shared: boolean;
+  is_member: boolean;
+  is_private: boolean;
+  is_mpim: boolean;
+  last_read: number;
+  unread_count: number;
+  unread_count_display: number;
+  members: string[];
+  topic: {
+    value: string;
+    creator: string;
+    last_set: number;
+  };
+  purpose: {
+    value: string;
+    creator: string;
+    last_set: number;
+  };
+  previous_names: string[];
 }

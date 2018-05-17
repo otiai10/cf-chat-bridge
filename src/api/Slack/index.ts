@@ -19,4 +19,13 @@ export default class API {
       json: message,
     });
   }
+
+  public getChannelInfo(id: string): Promise<Slack.Channel> {
+    const uri = `${API.baseURL}/channels.info`;
+    const query = `token=${this.accessToken}&channel=${id}`;
+    return request.get(uri + "?" + query).then(res => {
+      const body = JSON.parse(res);
+      return body.ok ? Promise.resolve(body.channel as Slack.Channel) : Promise.reject({msg: "Slack API failed", res});
+    });
+  }
 }

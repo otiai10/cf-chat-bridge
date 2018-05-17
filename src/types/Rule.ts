@@ -6,6 +6,7 @@ import {Service} from "./Service";
 export interface Source {
   service: Service;
   group?: RegExp|string;
+  channel?: RegExp|string;
 }
 
 export interface Destination {

@@ -1,5 +1,6 @@
 import * as express from "express";
 import LINEAPI from "../api/LINE";
+import SLACKAPI from "../api/Slack";
 import Transform from "../transform";
 import SlackToLine from "../transform/SlackToLine";
 import Entry from "../types/Entry";
@@ -10,10 +11,12 @@ import Handler, {Template} from "./handler";
 export default class SlackHandler extends Template implements Handler {
 
   private LINEAPI: LINEAPI;
+  private SLACKAPI: SLACKAPI;
   private transformer: Transform;
   constructor(rule, vars) {
     super(rule, vars);
     this.LINEAPI = new LINEAPI(this.vars.LINE_CHANNEL_ACCESS_TOKEN);
+    this.SLACKAPI = new SLACKAPI(this.vars.SLACK_APP_BOT_ACCESS_TOKEN);
     this.transformer = rule.transform ? rule.transform : new SlackToLine();
   }
 
@@ -38,14 +41,26 @@ export default class SlackHandler extends Template implements Handler {
     return [entry];
   }
   protected populate(entry: Entry): Promise<Entry> {
-    return Promise.resolve(entry);
+    const payload = entry.payload as Slack.Callback;
+    return this.SLACKAPI.getChannelInfo(payload.event.channel).then(channel => {
+      payload.channel = channel;
+      entry.payload = payload;
+      return Promise.resolve(entry);
+    });
   }
   protected filter(entry: Entry): Promise<Entry> {
+    entry.skip = true;
+    const payload = entry.payload as Slack.Callback;
+    if (this.rule.source.channel instanceof RegExp) {
+      entry.skip = ! (this.rule.source.channel.test(payload.channel.name));
+    } else if (typeof this.rule.source.channel === "string") {
+      entry.skip = ! (this.rule.source.channel === payload.channel.name);
+    }
     return Promise.resolve(entry);
   }
   protected transform(entry: Entry): Promise<Entry> {
     /* tslint:disable no-console */
-    console.log("[SLACK][0000]", JSON.stringify(entry.payload));
+    console.log("[SLACK][0000]", JSON.stringify(entry.payload), entry.skip);
     return this.transformer.json(entry.payload).then(transformed => {
       entry.transformed = transformed;
       return Promise.resolve(entry);

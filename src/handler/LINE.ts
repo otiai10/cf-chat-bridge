@@ -61,12 +61,15 @@ export default class LineHandler extends Template implements Handler {
     /* tslint:disable no-console */
     console.log("[LINE][0000]", JSON.stringify(entry.payload));
     const payload = entry.payload as LINE.Event;
-    // entry.skip = true;
-    // if (this.rule.source.group instanceof RegExp) {
-    //   entry.skip = !this.rule.source.group.test(payload.source.groupId);
-    // } else if (typeof this.rule.source.group === "string") {
-    //   entry.skip = (this.rule.source.group !== payload.source.groupId);
-    // }
+
+    // FIXME: rule.group should be RegExp and should be filtered by name, however,
+    //        there is no way to get Group "Name" by ID so far.
+    //        https://engineering.linecorp.com/ja/blog/detail/115#2_4
+    entry.skip = true;
+    if (typeof this.rule.source.group === "string") {
+      entry.skip = (this.rule.source.group !== payload.source.groupId);
+    }
+
     return Promise.resolve(entry);
   }
 
