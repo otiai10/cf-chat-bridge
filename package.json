@@ -1,6 +1,6 @@
 {
   "name": "cf-chat-bridge",
-  "version": "0.2.11",
+  "version": "0.2.18",
   "description": "",
   "main": "lib/index.js",
   "scripts": {
