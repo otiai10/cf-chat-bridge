@@ -5,7 +5,7 @@ import Rule from "../types/Rule";
 
 export default interface Handler {
   match(req: express.Request): boolean;
-  handle(req: express.Request): Array<Promise<any>>;
+  handle(req: express.Request): Promise<any>;
 }
 
 /**
@@ -35,8 +35,8 @@ export class Template {
    * Entrypoint for templated methods.
    * @param req express.Request
    */
-  public handle(req: express.Request): Array<Promise<any>> {
-    return this.entries(req).map(e => {
+  public handle(req: express.Request): Promise<any> {
+    return Promise.all(this.entries(req).map(e => {
       return Promise.resolve(e).then(entry => {
         return this.populate(entry);
       }).then(entry => {
@@ -46,7 +46,7 @@ export class Template {
       }).then(entry => {
         return entry.skip ? Promise.resolve(entry) : this.distribute(entry);
       });
-    });
+    }));
   }
 
   /**

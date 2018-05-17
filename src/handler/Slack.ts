@@ -26,7 +26,7 @@ export default class SlackHandler extends Template implements Handler {
       return false;
     }
     // This is special request from Slack
-    if (req.body.type === "url_verification") {
+    if (req.body.type === Slack.CallbackType.URLVerification) {
       return false;
     }
     const callback = req.body as Slack.Callback;

@@ -42,13 +42,10 @@ export default class App {
     Promise.all(
       this.handlers.filter(h => h.match(req)).map(h => h.handle(req)),
     ).then(results => {
-      if (results.length === 1) {
-        res.status(200).json(results[0]);
-      } else {
-        res.status(200).json(results);
-      }
-    }).catch(err => {
       /* tslint:disable no-console */
+      console.log("results", results[0]);
+      res.status(200).json(results.length === 1 ? results[0] : results);
+    }).catch(err => {
       console.error(err);
       res.status(500).json(err);
     });
