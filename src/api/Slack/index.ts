@@ -28,4 +28,16 @@ export default class API {
       return body.ok ? Promise.resolve(body.channel as Slack.Channel) : Promise.reject({msg: "Slack API failed", res});
     });
   }
+
+  /**
+   * https://slack.com/api/users.profile.get
+   */
+  public getUserProfile(id: string): Promise<Slack.UserProfile> {
+    const uri = `${API.baseURL}/users.profile.get`;
+    const query = `token=${this.accessToken}&user=${id}`;
+    return request.get(uri + "?" + query).then(res => {
+      const body = JSON.parse(res);
+      return body.ok ? Promise.resolve(body.profile as Slack.UserProfile) : Promise.reject({res});
+    });
+  }
 }

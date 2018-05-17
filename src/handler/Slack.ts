@@ -16,7 +16,7 @@ export default class SlackHandler extends Template implements Handler {
   constructor(rule, vars) {
     super(rule, vars);
     this.LINEAPI = new LINEAPI(this.vars.LINE_CHANNEL_ACCESS_TOKEN);
-    this.SLACKAPI = new SLACKAPI(this.vars.SLACK_APP_BOT_ACCESS_TOKEN);
+    this.SLACKAPI = new SLACKAPI(this.vars.SLACK_APP_OAUTH_ACCESS_TOKEN);
     this.transformer = rule.transform ? rule.transform : new SlackToLine();
   }
 
@@ -26,7 +26,7 @@ export default class SlackHandler extends Template implements Handler {
       return false;
     }
     // This is special request from Slack
-    if (req.body.type === "url_verification") {
+    if (req.body.type === Slack.CallbackType.URLVerification) {
       return false;
     }
     const callback = req.body as Slack.Callback;
@@ -46,6 +46,12 @@ export default class SlackHandler extends Template implements Handler {
       payload.channel = channel;
       entry.payload = payload;
       return Promise.resolve(entry);
+    }).then(() => {
+      return this.SLACKAPI.getUserProfile(payload.event.user).then(userprofile => {
+        payload.userprofile = userprofile;
+        entry.payload = payload;
+        return Promise.resolve(entry);
+      });
     });
   }
   protected filter(entry: Entry): Promise<Entry> {

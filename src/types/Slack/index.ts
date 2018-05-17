@@ -12,8 +12,10 @@ export interface Callback {
   authed_users?: string[];
   event: Event;
 
-  // WARNING: This is populated property
+  // {{{ Populated properties
   channel?: Channel;
+  userprofile?: UserProfile;
+  // }}}
 }
 
 /**
@@ -26,7 +28,7 @@ export enum CallbackType {
 
 export interface Event {
   type?: EventType;
-  user?: string | object;
+  user?: string;
   text?: string;
   ts?: number;
   channel: string;
@@ -103,4 +105,25 @@ export interface Channel {
     last_set: number;
   };
   previous_names: string[];
+}
+
+/**
+ * https://api.slack.com/methods/users.profile.get
+ */
+export interface UserProfile {
+  avatar_hash: string;
+  status_text: string;
+  status_emoji: string;
+  real_name: string;
+  display_name: string;
+  real_name_normalized: string;
+  display_name_normalized: string;
+  // email: string;
+  image_24: string;
+  image_32: string;
+  image_48: string;
+  image_72: string;
+  image_192: string;
+  image_512: string;
+  team: string;
 }

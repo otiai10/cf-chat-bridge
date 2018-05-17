@@ -6,6 +6,7 @@ import Entry from "../types/Entry";
 import * as LINE from "../types/LINE";
 import Rule from "../types/Rule";
 import {Service} from "../types/Service";
+import * as Slack from "../types/Slack";
 import Handler from "./handler";
 
 /**
@@ -35,18 +36,19 @@ export default class BuiltinHandler implements Handler {
       return false;
     }
   }
-  public handle(req: express.Request): Array<Promise<any>> {
+
+  public handle(req: express.Request): Promise<any> {
     switch (req.query.source) {
     case Service.LINE:
       return this.handleLINE(req);
     case Service.SLACK:
       return this.handleSlack(req);
     default:
-      return [Promise.resolve({})];
+      return Promise.resolve({msg: "BuiltinHandler should ignore this request"});
     }
   }
 
-  private handleLINE(req: express.Request): Array<Promise<any>> {
+  private handleLINE(req: express.Request): Promise<any> {
     return req.body.events.map(e => this.handleLINEEntry({req, payload: e}));
   }
 
@@ -78,10 +80,10 @@ export default class BuiltinHandler implements Handler {
     );
   }
 
-  private handleSlack(req: express.Request): Array<Promise<any>> {
-    if (req.body && req.body.type === "url_verification") {
-      return [Promise.resolve({challenge: req.body.challenge})];
+  private handleSlack(req: express.Request): Promise<any> {
+    if (req.body && req.body.type === Slack.CallbackType.URLVerification) {
+      return Promise.resolve({challenge: req.body.challenge});
     }
-    return [Promise.resolve({})];
+    return Promise.resolve({});
   }
 }
