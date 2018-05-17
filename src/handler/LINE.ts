@@ -83,10 +83,7 @@ export default class LineHandler extends Template implements Handler {
     });
   }
 
-  protected distribute(entry: Entry): Promise<Entry[]> {
-    if (entry.skip) {
-      return Promise.resolve([entry]);
-    }
+  protected distribute(entry: Entry): Promise<any[]> {
     const message = entry.transformed as Slack.Event;
     return Promise.all(
       (this.rule.destination.channels || []).map(channel => {

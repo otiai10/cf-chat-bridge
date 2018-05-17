@@ -44,7 +44,7 @@ export class Template {
       }).then(entry => {
         return entry.skip ? Promise.resolve(entry) : this.transform(entry);
       }).then(entry => {
-        return entry.skip ? Promise.resolve(entry) : this.distribute(entry);
+        return entry.skip ? Promise.resolve(entry.payload) : this.distribute(entry);
       });
     }));
   }
