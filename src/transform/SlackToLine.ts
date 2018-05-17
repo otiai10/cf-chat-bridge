@@ -5,7 +5,10 @@ import Transform from "./index";
 export default class SlackToLine extends Transform {
     public json(payload: Slack.Callback): Promise<LINE.Message> {
         return Promise.resolve({
-            text: payload.event.text || "UNDEFINED",
+            text: [
+                payload.userprofile.real_name || "User Unknown",
+                payload.event.text || "Text Undefined",
+            ].join("\n"),
             type: "text",
         } as LINE.Message);
     }

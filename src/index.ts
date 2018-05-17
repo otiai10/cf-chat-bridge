@@ -12,7 +12,7 @@ export interface IVariables {
   LINE_CHANNEL_SECRET?: string;
   LINE_CHANNEL_ACCESS_TOKEN?: string;
   SLACK_APP_VERIFICATION_TOKEN?: string;
-  SLACK_APP_BOT_ACCESS_TOKEN?: string;
+  SLACK_APP_OAUTH_ACCESS_TOKEN?: string;
 }
 
 export function init(options: IAppOptions = {}): App {
@@ -43,7 +43,6 @@ export default class App {
       this.handlers.filter(h => h.match(req)).map(h => h.handle(req)),
     ).then(results => {
       /* tslint:disable no-console */
-      console.log("results", results[0]);
       res.status(200).json(results.length === 1 ? results[0] : results);
     }).catch(err => {
       console.error(err);

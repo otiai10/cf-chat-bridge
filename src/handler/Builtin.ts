@@ -6,6 +6,7 @@ import Entry from "../types/Entry";
 import * as LINE from "../types/LINE";
 import Rule from "../types/Rule";
 import {Service} from "../types/Service";
+import * as Slack from "../types/Slack";
 import Handler from "./handler";
 
 /**

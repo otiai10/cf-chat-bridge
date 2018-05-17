@@ -29,7 +29,7 @@ export default class LineHandler extends Template implements Handler {
     super(rule, vars);
     this.transformer = rule.transform ? rule.transform : new LineToSlack();
     this.LINEAPI = new LINEAPI(vars.LINE_CHANNEL_ACCESS_TOKEN);
-    this.SLACKAPI = new SLACKAPI(vars.SLACK_APP_BOT_ACCESS_TOKEN);
+    this.SLACKAPI = new SLACKAPI(vars.SLACK_APP_OAUTH_ACCESS_TOKEN);
     // TODO: Dispatch commit destinations by rule.destination
   }
 
