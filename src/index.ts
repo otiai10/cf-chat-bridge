@@ -51,9 +51,12 @@ export default class App {
   }
 
   private createHandlers(rules: Rule[] = []): Handler[] {
-    return [...rules.map<Handler>(rule => {
-      return createHandler(rule, this.vars);
-    }), new BuiltinHandler({}, this.vars)];
+    return [
+      ...rules.map<Handler[]>(rule => {
+        return createHandler(rule, this.vars);
+      }).reduce((all: Handler[], part: Handler[]) => all.concat(part), []),
+      new BuiltinHandler({}, this.vars),
+    ];
   }
 
 }

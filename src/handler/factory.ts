@@ -7,13 +7,13 @@ import LineHandler from "./LINE";
 import SlackHandler from "./Slack";
 import UnknownHandler from "./Unknown";
 
-export function createHandler(rule: Rule, vars: IVariables): Handler {
+export function createHandler(rule: Rule, vars: IVariables): Handler[] {
   switch ((rule.source.service || "").toUpperCase()) {
     case Service.LINE:
-      return new LineHandler(rule, vars);
+      return [new LineHandler(rule, vars)];
     case Service.SLACK:
-      return new SlackHandler(rule, vars);
+      return [new SlackHandler(rule, vars)];
     default:
-      return new UnknownHandler();
+      return [new UnknownHandler()];
   }
 }
