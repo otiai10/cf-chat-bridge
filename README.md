@@ -50,18 +50,26 @@ module.exports = [
   "LINE_CHANNEL_SECRET": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
   "LINE_CHANNEL_ACCESS_TOKEN": "xxxxxxxxxxxxxxxxxxxxxxxx",
   "SLACK_APP_VERIFICATION_TOKEN": "xxxxxxxxxxxxxxxxxxxxx",
-  "SLACK_APP_BOT_ACCESS_TOKEN": "xoxb-xxxxxxxxxxxxxxxxxx"
+  "SLACK_APP_OAUTH_ACCESS_TOKEN": "xoxp-xxxxxxxxxxxxxxxxxx"
 }
 ```
 
 - `LINE_CHANNEL_SECRET`
-  - can be get when you create provider and bot channel in LINE developer console.
+  - Secret key to verify request triggered from LINE webhook
+  - Created when you create `a channel` on https://developers.line.me/console/
 - `LINE_CHANNEL_ACCESS_TOKEN`
-  - can be created when you create provider and bot channel in LINE developer console.
+  - Access token to send message to LINE
+  - Created when you create `a channel` on https://developers.line.me/console/
 - `SLACK_APP_VERIFICATION_TOKEN`
-  - is created when you create an App on your slack team.
-- `SLACK_APP_BOT_ACCESS_TOKEN`
-  - is created when you create a bot user belonging to the App you created.
+  - Secret key to verify request triggered from Slack webhook
+  - Created when you create `an app` on https://api.slack.com/apps
+    - and enable [**Events API**](https://api.slack.com/events-api)
+- `SLACK_APP_OAUTH_ACCESS_TOKEN`
+  - Access token to send message to Slack
+  - Created when you create `an app` on https://api.slack.com/apps
+    - and install the app to your workspace
+
+See https://github.com/otiai10/cf-chat-bridge/wiki/Getting-Started for more information about getting started.
 
 # How to deploy your `index.js` to Google Cloud Functions
 
