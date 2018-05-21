@@ -19,4 +19,5 @@ export default interface Rule {
   source: Source;
   destination: Destination;
   transform?: Transform;
+  pipe?: Source[];
 }
