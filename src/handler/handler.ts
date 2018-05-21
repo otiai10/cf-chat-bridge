@@ -1,7 +1,7 @@
 import * as express from "express";
-import { IVariables } from "..";
 import Entry from "../types/Entry";
 import Rule from "../types/Rule";
+import Variables from "../types/Vars";
 
 export default interface Handler {
   match(req: express.Request): boolean;
@@ -16,7 +16,7 @@ export default interface Handler {
 export class Template {
 
   protected rule: Rule;
-  protected vars: IVariables;
+  protected vars: Variables;
 
   constructor(rule: Rule, vars: any) {
     this.rule = rule;

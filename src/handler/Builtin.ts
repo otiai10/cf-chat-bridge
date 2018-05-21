@@ -1,5 +1,4 @@
 import * as express from "express";
-import {IVariables} from "..";
 import LINEAPI from "../api/LINE";
 import SLACKAPI from "../api/Slack";
 import Entry from "../types/Entry";
@@ -7,6 +6,7 @@ import * as LINE from "../types/LINE";
 import Rule from "../types/Rule";
 import {Service} from "../types/Service";
 import * as Slack from "../types/Slack";
+import Variables from "../types/Vars";
 import Handler from "./handler";
 
 /**
@@ -19,7 +19,7 @@ import Handler from "./handler";
  */
 export default class BuiltinHandler implements Handler {
   private rule: Rule;
-  private vars: IVariables;
+  private vars: Variables;
   private LINEAPI: LINEAPI;
   constructor(rule, vars) {
     this.rule = rule;

@@ -1,11 +1,11 @@
 import * as crypto from "crypto";
 import * as express from "express";
-import { IVariables } from "..";
 import { Service } from "../types/Service";
+import Variables from "../types/Vars";
 
 export default class Verifier {
-    private vars: IVariables;
-    constructor(vars: IVariables) {
+    private vars: Variables;
+    constructor(vars: Variables) {
         this.vars = vars;
     }
 

@@ -6,6 +6,7 @@ import SlackToLine from "../transform/SlackToLine";
 import Entry from "../types/Entry";
 import {Service} from "../types/Service";
 import * as Slack from "../types/Slack";
+import Variables from "../types/Vars";
 import Handler, {Template} from "./handler";
 
 export default class SlackHandler extends Template implements Handler {
@@ -13,7 +14,7 @@ export default class SlackHandler extends Template implements Handler {
   private LINEAPI: LINEAPI;
   private SLACKAPI: SLACKAPI;
   private transformer: Transform;
-  constructor(rule, vars) {
+  constructor(rule, vars: Variables) {
     super(rule, vars);
     this.LINEAPI = new LINEAPI(this.vars.LINE_CHANNEL_ACCESS_TOKEN);
     this.SLACKAPI = new SLACKAPI(this.vars.SLACK_APP_OAUTH_ACCESS_TOKEN);

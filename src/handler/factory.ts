@@ -1,13 +1,13 @@
 import * as express from "express";
-import { IVariables } from "..";
 import Rule, { Destination, Source } from "../types/Rule";
 import { Service } from "../types/Service";
+import Variables from "../types/Vars";
 import Handler from "./handler";
 import LineHandler from "./LINE";
 import SlackHandler from "./Slack";
 import UnknownHandler from "./Unknown";
 
-export function createHandler(rule: Rule, vars: IVariables): Handler[] {
+export function createHandler(rule: Rule, vars: Variables): Handler[] {
   if (rule.pipe instanceof Array) {
     return handlersByPipe(rule, vars);
   }
@@ -21,7 +21,7 @@ export function createHandler(rule: Rule, vars: IVariables): Handler[] {
   }
 }
 
-function handlersByPipe(rule: Rule, vars: IVariables): Handler[] {
+function handlersByPipe(rule: Rule, vars: Variables): Handler[] {
   if (rule.pipe.length !== 2) {
     throw new Error("invalid pipe rule, length must be 2");
   }

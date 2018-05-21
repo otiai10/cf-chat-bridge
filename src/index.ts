@@ -4,28 +4,23 @@ import BuiltinHandler from "./handler/Builtin";
 import Rule from "./types/Rule";
 import Verifier from "./verifier";
 
-export interface IAppOptions {
-  vars?: IVariables;
+export interface AppOptions {
+  vars?: Variables;
 }
 
-export interface IVariables {
-  LINE_CHANNEL_SECRET?: string;
-  LINE_CHANNEL_ACCESS_TOKEN?: string;
-  SLACK_APP_VERIFICATION_TOKEN?: string;
-  SLACK_APP_OAUTH_ACCESS_TOKEN?: string;
-}
+import Variables from "./types/Vars";
 
-export function init(options: IAppOptions = {}): App {
+export function init(options: AppOptions = {}): App {
   return new App(options);
 }
 
 export default class App {
 
-  private vars: IVariables = {};
+  private vars: Variables = {};
   private handlers: Handler[] = [];
   private verifier: Verifier;
 
-  constructor(options: IAppOptions) {
+  constructor(options: AppOptions) {
     this.vars = options.vars || {};
     this.verifier = new Verifier(this.vars);
   }

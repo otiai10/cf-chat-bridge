@@ -1,11 +1,11 @@
 import * as express from "express";
 
-import { IVariables } from "..";
 import Transform from "../transform";
 import LineToSlack from "../transform/LineToSlack";
 import Entry from "../types/Entry";
 import Rule from "../types/Rule";
 import { Service } from "../types/Service";
+import Variables from "../types/Vars";
 import Handler, {Template} from "./handler";
 
 import * as LINE from "../types/LINE";
@@ -25,7 +25,7 @@ export default class LineHandler extends Template implements Handler {
   private LINEAPI: LINEAPI;
   private SLACKAPI: SLACKAPI;
 
-  constructor(rule: Rule, vars: IVariables) {
+  constructor(rule: Rule, vars: Variables) {
     super(rule, vars);
     this.transformer = rule.transform ? rule.transform : new LineToSlack();
     this.LINEAPI = new LINEAPI(vars.LINE_CHANNEL_ACCESS_TOKEN);
