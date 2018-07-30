@@ -18,6 +18,6 @@ export interface Destination {
 export default interface Rule {
   source: Source;
   destination: Destination;
-  transform?: Transform;
+  transforms: Transform[];
   pipe?: Source[];
 }

@@ -1,9 +1,9 @@
 import * as express from "express";
 import LINEAPI from "../api/LINE";
 import SLACKAPI from "../api/Slack";
-import Transform from "../transform";
 import SlackToLine from "../transform/SlackToLine";
 import Entry from "../types/Entry";
+import Rule from "../types/Rule";
 import {Service} from "../types/Service";
 import * as Slack from "../types/Slack";
 import Variables from "../types/Vars";
@@ -13,12 +13,12 @@ export default class SlackHandler extends Template implements Handler {
 
   private LINEAPI: LINEAPI;
   private SLACKAPI: SLACKAPI;
-  private transformer: Transform;
-  constructor(rule, vars: Variables) {
+  constructor(rule: Rule, vars: Variables) {
     super(rule, vars);
     this.LINEAPI = new LINEAPI(this.vars.LINE_CHANNEL_ACCESS_TOKEN);
     this.SLACKAPI = new SLACKAPI(this.vars.SLACK_APP_OAUTH_ACCESS_TOKEN);
-    this.transformer = rule.transform ? rule.transform : new SlackToLine();
+    this.transforms = rule.transforms ? rule.transforms : [];
+    this.transforms.unshift(new SlackToLine());
   }
 
   public match(req: express.Request): boolean {
@@ -65,14 +65,7 @@ export default class SlackHandler extends Template implements Handler {
     }
     return Promise.resolve(entry);
   }
-  protected transform(entry: Entry): Promise<Entry> {
-    /* tslint:disable no-console */
-    console.log("[SLACK][0000]", JSON.stringify(entry.payload), entry.skip);
-    return this.transformer.json(entry.payload).then(transformed => {
-      entry.transformed = transformed;
-      return Promise.resolve(entry);
-    });
-  }
+
   protected distribute(entry: Entry): Promise<Entry[]> {
     return Promise.all(this.rule.destination.to.map(to => {
       return this.LINEAPI.pushMessage(to, entry.transformed);
