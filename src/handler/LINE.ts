@@ -27,7 +27,7 @@ export default class LineHandler extends Template implements Handler {
     super(rule, vars);
     this.LINEAPI = new LINEAPI(vars.LINE_CHANNEL_ACCESS_TOKEN);
     this.SLACKAPI = new SLACKAPI(vars.SLACK_APP_OAUTH_ACCESS_TOKEN);
-    this.transforms = rule.transforms ? rule.transforms : [];
+    this.transforms = rule.transforms ? [].concat(rule.transforms) : [];
     this.transforms.unshift(new LineToSlack());
   }
 

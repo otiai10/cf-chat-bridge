@@ -86,7 +86,9 @@ export class Template {
     }
     const entrypoint = Promise.resolve(entry.payload);
     return this.transforms.reduce((prevPromise: Promise<any>, nextTransform: Transform) => {
-      return prevPromise.then(payload => nextTransform.json(payload));
+      return prevPromise.then(payload => {
+        return nextTransform.json(payload);
+      });
     }, entrypoint).then(transformed => {
       entry.transformed = transformed;
       return Promise.resolve(entry);
