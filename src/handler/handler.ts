@@ -16,8 +16,8 @@ export default interface Handler {
  */
 export class Template {
 
-  protected rule: Rule;
-  protected vars: Variables;
+  public rule: Rule;
+  public vars: Variables;
   protected transforms: Transform[] = [];
 
   constructor(rule: Rule, vars: any) {
