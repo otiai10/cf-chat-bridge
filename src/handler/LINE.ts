@@ -2,13 +2,13 @@ import * as express from "express";
 
 import LineToSlack from "../transform/LineToSlack";
 import Entry from "../types/Entry";
+import * as LINE from "../types/LINE";
 import Rule from "../types/Rule";
 import { Service } from "../types/Service";
-import Variables from "../types/Vars";
-import Handler, {Template} from "./handler";
-
-import * as LINE from "../types/LINE";
 import * as Slack from "../types/Slack";
+import Variables from "../types/Vars";
+import {createTransforms} from "./factory";
+import Handler, {Template} from "./handler";
 
 import LINEAPI from "../api/LINE";
 import SLACKAPI from "../api/Slack";
@@ -27,8 +27,7 @@ export default class LineHandler extends Template implements Handler {
     super(rule, vars);
     this.LINEAPI = new LINEAPI(vars.LINE_CHANNEL_ACCESS_TOKEN);
     this.SLACKAPI = new SLACKAPI(vars.SLACK_APP_OAUTH_ACCESS_TOKEN);
-    this.transforms = rule.transforms ? [].concat(rule.transforms) : [];
-    this.transforms.unshift(new LineToSlack());
+    this.transforms = createTransforms(new LineToSlack(), vars, rule.transforms);
   }
 
   /**

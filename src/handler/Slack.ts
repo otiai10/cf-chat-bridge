@@ -7,6 +7,7 @@ import Rule from "../types/Rule";
 import {Service} from "../types/Service";
 import * as Slack from "../types/Slack";
 import Variables from "../types/Vars";
+import { createTransforms } from "./factory";
 import Handler, {Template} from "./handler";
 
 export default class SlackHandler extends Template implements Handler {
@@ -17,8 +18,7 @@ export default class SlackHandler extends Template implements Handler {
     super(rule, vars);
     this.LINEAPI = new LINEAPI(this.vars.LINE_CHANNEL_ACCESS_TOKEN);
     this.SLACKAPI = new SLACKAPI(this.vars.SLACK_APP_OAUTH_ACCESS_TOKEN);
-    this.transforms = rule.transforms ? [].concat(rule.transforms) : [];
-    this.transforms.unshift(new SlackToLine());
+    this.transforms = createTransforms(new SlackToLine(), vars, rule.transforms);
   }
 
   public match(req: express.Request): boolean {

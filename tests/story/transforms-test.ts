@@ -3,7 +3,7 @@ import {createHandler, LineHandler} from "../../src/handler";
 import LineToSlack from "../../src/transform/LineToSlack";
 import Entry from "../../src/types/Entry";
 
-const vars = require("../data/example-vars.json");
+const vars = require("../data/example-vars");
 const messages = require("../data/messages.json");
 
 describe("createHandler", () => {
@@ -30,6 +30,18 @@ describe("When custom transforms are given", () => {
     const exp = new Exposer(h);
     exp.transform(messages.case_00).then(entry => {
       expect(entry.transformed.text).toBe("こんにちは!!!!!!!!!!!!!!!!!!!!");
+      ok();
+    });
+  });
+});
+
+describe("When google translate transform is given", () => {
+  it("should translate the text", (ok) => {
+    const rule = require("../data/example-rules")[2];
+    const h = createHandler(rule, vars)[0] as LineHandler;
+    const exp = new Exposer(h);
+    exp.transform(messages.case_00).then(entry => {
+      expect(entry.transformed.text).toBe("Hello");
       ok();
     });
   });

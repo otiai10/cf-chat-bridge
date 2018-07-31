@@ -1,4 +1,6 @@
 import * as express from "express";
+import Transform from "../transform";
+import { Translate } from "../transform/plugins";
 import Rule, { Destination, Source } from "../types/Rule";
 import { Service } from "../types/Service";
 import Variables from "../types/Vars";
@@ -54,5 +56,27 @@ function sourceToDestination(src: Source): Destination {
       return {
         service: Service.Unknown,
       };
+  }
+}
+
+export function createTransforms(preset: Transform, vars: Variables, params: any[] = []): Transform[] {
+  const res: Transform[] = params.map<Transform>(p => {
+    if (typeof p.json === "function") {
+      return p as Transform;
+    }
+    if (typeof p === "object" && typeof p.plugin === "string") {
+      return createTransformFromPlugin(vars, p);
+    }
+    return null;
+  }).filter(t => t != null);
+  return preset === null ? res : [preset].concat(res);
+}
+
+function createTransformFromPlugin(vars: Variables, params: any): Transform {
+  switch (params.plugin) {
+  case "translate":
+    return new Translate(params.lang.from, params.lang.to, vars.GOOGLE_API_KEY);
+  default:
+    return null;
   }
 }
