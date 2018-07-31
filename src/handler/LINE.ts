@@ -1,15 +1,14 @@
 import * as express from "express";
 
-import Transform from "../transform";
 import LineToSlack from "../transform/LineToSlack";
 import Entry from "../types/Entry";
+import * as LINE from "../types/LINE";
 import Rule from "../types/Rule";
 import { Service } from "../types/Service";
-import Variables from "../types/Vars";
-import Handler, {Template} from "./handler";
-
-import * as LINE from "../types/LINE";
 import * as Slack from "../types/Slack";
+import Variables from "../types/Vars";
+import {createTransforms} from "./factory";
+import Handler, {Template} from "./handler";
 
 import LINEAPI from "../api/LINE";
 import SLACKAPI from "../api/Slack";
@@ -21,16 +20,14 @@ import SLACKAPI from "../api/Slack";
  */
 export default class LineHandler extends Template implements Handler {
 
-  private transformer: Transform;
   private LINEAPI: LINEAPI;
   private SLACKAPI: SLACKAPI;
 
   constructor(rule: Rule, vars: Variables) {
     super(rule, vars);
-    this.transformer = rule.transform ? rule.transform : new LineToSlack();
     this.LINEAPI = new LINEAPI(vars.LINE_CHANNEL_ACCESS_TOKEN);
     this.SLACKAPI = new SLACKAPI(vars.SLACK_APP_OAUTH_ACCESS_TOKEN);
-    // TODO: Dispatch commit destinations by rule.destination
+    this.transforms = createTransforms(new LineToSlack(), vars, rule.transforms);
   }
 
   /**
@@ -71,16 +68,6 @@ export default class LineHandler extends Template implements Handler {
     }
 
     return Promise.resolve(entry);
-  }
-
-  protected transform(entry: Entry): Promise<Entry> {
-    if (entry.skip) {
-      return Promise.resolve(entry);
-    }
-    return this.transformer.json(entry.payload).then(transformed => {
-      entry.transformed = transformed;
-      return Promise.resolve(entry);
-    });
   }
 
   protected distribute(entry: Entry): Promise<any[]> {

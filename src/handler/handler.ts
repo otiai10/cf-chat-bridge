@@ -1,4 +1,5 @@
 import * as express from "express";
+import Transform from "../transform";
 import Entry from "../types/Entry";
 import Rule from "../types/Rule";
 import Variables from "../types/Vars";
@@ -15,8 +16,9 @@ export default interface Handler {
  */
 export class Template {
 
-  protected rule: Rule;
-  protected vars: Variables;
+  public rule: Rule;
+  public vars: Variables;
+  protected transforms: Transform[] = [];
 
   constructor(rule: Rule, vars: any) {
     this.rule = rule;
@@ -79,7 +81,18 @@ export class Template {
    * @param entry Entry to handle
    */
   protected transform(entry: Entry): Promise<Entry> {
-    throw new Error("`transform` method is not implemented on this Handler class");
+    if (entry.skip) {
+      return Promise.resolve(entry);
+    }
+    const entrypoint = Promise.resolve(entry.payload);
+    return this.transforms.reduce((prevPromise: Promise<any>, nextTransform: Transform) => {
+      return prevPromise.then(payload => {
+        return nextTransform.json(payload);
+      });
+    }, entrypoint).then(transformed => {
+      entry.transformed = transformed;
+      return Promise.resolve(entry);
+    });
   }
   /**
    * distribute method finally post the transformed payload to the destination service.

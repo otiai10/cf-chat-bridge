@@ -1,5 +1,5 @@
 /* tslint:disable no-var-requires */
-const vars = require("../data/example-vars.json");
+const vars = require("../data/example-vars");
 
 import {createHandler, Handler, LineHandler, SlackHandler} from "../../src/handler";
 

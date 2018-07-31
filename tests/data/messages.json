@@ -1,0 +1,18 @@
+{
+  "case_00": {
+    "payload": {
+      "message": {
+        "type": "text",
+        "text": "こんにちは"
+      },
+      "replyToken": "xx",
+      "source": {
+        "type": "room",
+        "userId": "xxx"
+      },
+      "timestamp": 1234567890,
+      "user": {}
+    },
+    "req": {}
+  }
+}
