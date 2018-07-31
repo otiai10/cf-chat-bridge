@@ -1,5 +1,8 @@
 # Chat Bridge by Google Cloud Functions
 
+[![Latest Stable Version](https://img.shields.io/npm/v/cf-chat-bridge.svg)](https://www.npmjs.com/package/cf-chat-bridge)
+[![Build Status](https://travis-ci.org/otiai10/cf-chat-bridge.svg?branch=master)](https://travis-ci.org/otiai10/cf-chat-bridge)
+
 Framework for **Google Cloud Functions** to bridge communications in chat services, such as
 
 - LINE -> Slack
