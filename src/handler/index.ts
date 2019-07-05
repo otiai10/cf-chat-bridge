@@ -4,8 +4,8 @@ import LineHandler from "./LINE";
 import SlackHandler from "./Slack";
 
 export {
-  Handler,
-  LineHandler,
-  SlackHandler,
-  createHandler,
+    Handler,
+    LineHandler,
+    SlackHandler,
+    createHandler,
 };

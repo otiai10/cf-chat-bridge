@@ -2,6 +2,11 @@ import * as Google from "../../api/Google";
 import * as LINE from "../../types/LINE";
 import * as Slack from "../../types/Slack";
 
+export interface TranslateConfig {
+  from: string;
+  to: string;
+}
+
 export default class Translate {
 
   public from: string;

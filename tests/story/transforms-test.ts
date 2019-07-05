@@ -1,7 +1,6 @@
-/* tslint:disable no-var-requires */
-import {createHandler, LineHandler} from "../../src/handler";
+// import Entry from "../../src/types/Entry";
 import LineToSlack from "../../src/transform/LineToSlack";
-import Entry from "../../src/types/Entry";
+import { createHandler, LineHandler } from "../../src/handler";
 
 const vars = require("../data/example-vars");
 const messages = require("../data/messages.json");
@@ -13,8 +12,7 @@ describe("createHandler", () => {
     expect((h as any).transforms.length).toBe(1);
     expect((h as any).transforms[0]).toBeInstanceOf(LineToSlack);
 
-    const exp = new Exposer(h);
-    const entry = await exp.transform(messages.case_00);
+    const entry = await h.transform(messages.case_00);
     expect(entry.transformed.text).toBe("こんにちは");
   });
 });
@@ -25,8 +23,8 @@ describe("When custom transforms are given", () => {
     const h = createHandler(rule, vars)[0] as LineHandler;
     expect((h as any).transforms.length).toBe(2);
     expect((h as any).transforms[0]).toBeInstanceOf(LineToSlack);
-    const exp = new Exposer(h);
-    const entry = await exp.transform(messages.case_00);
+
+    const entry = await h.transform(messages.case_00);
     expect(entry.transformed.text).toBe("こんにちは!!!!!!!!!!!!!!!!!!!!");
   });
 });
@@ -35,17 +33,8 @@ describe("When google translate transform is given", () => {
   it("should translate the text", async () => {
     const rule = require("../data/example-rules")[2];
     const h = createHandler(rule, vars)[0] as LineHandler;
-    const exp = new Exposer(h);
-    const entry = await exp.transform(messages.case_00);
+
+    const entry = await h.transform(messages.case_00);
     expect(entry.transformed.text).toBe("Hello");
   });
 });
-
-class Exposer extends LineHandler {
-  constructor(h: LineHandler) {
-    super(h.rule, h.vars);
-  }
-  public transform(entry: Entry) {
-    return super.transform(entry);
-  }
-}
