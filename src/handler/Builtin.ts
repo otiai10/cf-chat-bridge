@@ -1,7 +1,6 @@
 import * as express from "express";
 import LINEAPI from "../api/LINE";
 import Entry from "../types/Entry";
-import Rule from "../types/Rule";
 import {Service} from "../types/Service";
 import * as LINE from "../types/LINE";
 import * as Slack from "../types/Slack";

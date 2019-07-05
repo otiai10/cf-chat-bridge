@@ -2,8 +2,8 @@
 const Bridge = require("../lib/index.js");
 
 // Your secret variables, see following for more details.
-const secrets = require("./secrets.json");
-const rules = require("./rules.json");
+const secrets = require("./secrets");
+const rules = require("./rules");
 
 // Initialize your bridge.
 const bridge = new Bridge({ rules, secrets });
