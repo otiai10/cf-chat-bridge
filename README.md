@@ -32,9 +32,16 @@ exports.foobar = bridge.endpoint();
 
 ```javascript
 module.exports = [
+
+  /**
+   *  This is a rule representing one-way bridge,
+   *
+   *    LINE group → SLACK channel(s)
+   */
   {
     // From any groups of LINE in which the bot is a member
     "source": {
+      "service": "LINE",
       "group": /.*/
     },
     // To "random" channel of Slack in which the bot is a member
@@ -42,7 +49,26 @@ module.exports = [
       "service": "Slack",
       "channels": ["random"]
     }
-  }
+  },
+
+  /**
+   * This is a rule representing two-way bridge,
+   *
+   *    LINE group ↔ SLACK channel
+   */
+  {
+    "pipe": [
+      {
+        "service": "LINE",
+        "group": "C3a08fbcbd1c7c3dc4c68d42fb46bd112",
+      },
+      {
+        "service": "SLACK",
+        "channel": "general",
+      },
+    ]
+  },
+
 ]
 ```
 

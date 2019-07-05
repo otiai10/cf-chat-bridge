@@ -1,13 +1,5 @@
 
 const Bridge = require("../lib/index.js");
-/**
- * Use:
- * 
- *      const Bridge = require("cf-chat-bridge");
- * 
- * instead, in your project.
- */
-
 
 // Your secret variables, see following for more details.
 const secrets = require("./secrets.json");
