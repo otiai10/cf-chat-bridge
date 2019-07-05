@@ -4,3 +4,5 @@ node_js:
 script:
   - npm run lint
   - npm test
+  - npm run build
+  - node ./example-project

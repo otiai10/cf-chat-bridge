@@ -18,7 +18,7 @@ import Handler from "./handler";
  */
 export default class BuiltinHandler implements Handler {
     private LINEAPI: LINEAPI;
-    constructor(private rule: Rule, private secrets: Secrets) {
+    constructor(private rule: any, private secrets: Secrets) {
         this.LINEAPI = new LINEAPI(this.secrets.LINE_CHANNEL_ACCESS_TOKEN);
     }
     match(req: express.Request): boolean {
