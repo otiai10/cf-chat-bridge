@@ -7,7 +7,8 @@
     "up": "rm -rf lib && npm run build && npm publish",
     "start": "tsc --watch",
     "build": "tsc -p ./tsconfig.json",
-    "test": "tslint ./src/**/*.ts && jest"
+    "lint": "eslint src/**/*.ts",
+    "test": "jest"
   },
   "repository": {
     "type": "git",
@@ -16,17 +17,19 @@
   "author": "otiai10",
   "license": "MIT",
   "dependencies": {
-    "request": "^2.85.0",
+    "request": "^2.88.0",
     "request-promise": "^4.2.2"
   },
   "devDependencies": {
     "@types/bluebird-global": "^3.5.5",
     "@types/express": "^4.11.1",
     "@types/jest": "^22.2.3",
-    "jest": "^22.4.3",
-    "ts-jest": "^22.4.5",
-    "tslint": "^5.10.0",
-    "typescript": "^2.8.3"
+    "@typescript-eslint/eslint-plugin": "^1.11.0",
+    "@typescript-eslint/parser": "^1.11.0",
+    "eslint": "^6.0.1",
+    "jest": "^24.8.0",
+    "ts-jest": "^24.0.2",
+    "typescript": "^3.5.2"
   },
   "jest": {
     "verbose": true,
@@ -37,7 +40,6 @@
     "moduleFileExtensions": [
       "ts",
       "js"
-    ],
-    "setupTestFrameworkScriptFile": "./tests/setup.ts"
+    ]
   }
 }

@@ -2,7 +2,7 @@ var secrets = {};
 try {
   secrets = require("./test-secret-vars");
 } catch (e) {
-  // do nothing.
+  console.warn("You might need ./tests/data/test-secret-vars.js");
 }
 
 module.exports = {

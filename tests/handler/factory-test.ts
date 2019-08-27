@@ -1,7 +1,7 @@
 /* tslint:disable no-var-requires */
 const vars = require("../data/example-vars");
 
-import {createHandler, Handler, LineHandler, SlackHandler} from "../../src/handler";
+import {createHandler, LineHandler, SlackHandler} from "../../src/handler";
 
 describe("createHandler", () => {
   it("should be a function", () => {

@@ -13,34 +13,62 @@ Framework for **Google Cloud Functions** to bridge communications in chat servic
 # Example of your `index.js`
 
 ```javascript
-const bridge = require("cf-chat-bridge");
+const Bridge = require("cf-chat-bridge");
 
-// Your secret variables, see following for details
-const vars = require("./secret.json");
-const app = bridge.init({vars});
+// Your secret variables, see following for more details.
+const secrets = require("./your/secrets");
+// Your rules to bridge messages, see following for more details.
+const rules = require("./your/rules");
 
-// Your rules to bridge messages, see following for details
-const rules = require("./rules");
-const endpoint = app.webhook(rules);
+// Initialize your bridge.
+const bridge = new Bridge(rules, secrets);
 
-exports.foobar = endpoint;
+// Export your endpoint as a member of module,
+// so that Google CloudFunctions can listen /foobar as an endpoint.
+exports.foobar = bridge.endpoint();
 ```
 
 # Example rules
 
 ```javascript
 module.exports = [
+
+  /**
+   *  This is a rule representing one-way bridge,
+   *
+   *    LINE group → SLACK channel(s)
+   */
   {
-    // From any groups of LINE
+    // From any groups of LINE in which the bot is a member
     "source": {
+      "service": "LINE",
       "group": /.*/
     },
-    // To "random" channel of Slack
+    // To "random" channel of Slack in which the bot is a member
     "destination": {
       "service": "Slack",
       "channels": ["random"]
     }
-  }
+  },
+
+  /**
+   * This is a rule representing two-way bridge,
+   *
+   *    LINE group ↔ SLACK channel
+   */
+  {
+    "pipe": [
+      {
+        "service": "LINE",
+        "group": "C3a08fbcbd1c7c3dc4c68d42fb46bd112",
+      },
+      {
+        "service": "SLACK",
+        "channel": "general",
+      },
+    ]
+  },
+
 ]
 ```
 
