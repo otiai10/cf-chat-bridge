@@ -21,7 +21,7 @@ const secrets = require("./your/secrets");
 const rules = require("./your/rules");
 
 // Initialize your bridge.
-const bridge = new Bridge(rules, secrets);
+const bridge = new Bridge({rules, secrets});
 
 // Export your endpoint as a member of module,
 // so that Google CloudFunctions can listen /foobar as an endpoint.
