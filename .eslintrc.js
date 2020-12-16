@@ -22,8 +22,13 @@ module.exports = {
         "sourceType": "module"
     },
     "rules": {
+        "indent": "off",
+        "@typescript-eslint/indent": ["error", 2],
         "@typescript-eslint/explicit-member-accessibility": ["error", {
-            "accessibility": "no-public",
+            "accessibility": "explicit",
+            "overrides": {
+                "constructors": "no-public"
+            }
         }],
         "@typescript-eslint/no-parameter-properties": ["error", {
             "allows": ["public", "readonly", "private", "protected"],
@@ -33,8 +38,8 @@ module.exports = {
             "functions": false,
         }],
         "@typescript-eslint/no-explicit-any": 0, // TODO
-        "@typescript-eslint/camelcase": ["error", {
-            "properties": "never",
-        }],
+        // "@typescript-eslint/camelcase": ["error", {
+        //     "properties": "never",
+        // }],
     },
 };

@@ -6,6 +6,7 @@ import * as LINE from "../types/LINE";
 import * as Slack from "../types/Slack";
 import Secrets from "../types/Secrets";
 import Handler from "./handler";
+import Rule from "../types/Rule";
 
 /**
  * BuiltinHandler handles ANY webhook requests which are required by services.
@@ -16,71 +17,70 @@ import Handler from "./handler";
  * this handler handles these webhooks.
  */
 export default class BuiltinHandler implements Handler {
-    private LINEAPI: LINEAPI;
-    constructor(private rule: any, private secrets: Secrets) {
-        this.LINEAPI = new LINEAPI(this.secrets.LINE_CHANNEL_ACCESS_TOKEN);
+  private LINEAPI: LINEAPI;
+  constructor(private rule: Rule, private secrets: Secrets) {
+    this.LINEAPI = new LINEAPI(this.secrets.LINE_CHANNEL_ACCESS_TOKEN);
+  }
+  public match(req: express.Request): boolean {
+    switch (req.query.source) {
+      case Service.LINE:
+        return true;
+      case Service.SLACK:
+        console.log(1001, "match", req.body);
+        return true;
+      default:
+        return false;
     }
-    match(req: express.Request): boolean {
-        switch (req.query.source) {
-            case Service.LINE:
-                return true;
-            case Service.SLACK:
-                console.log(1001, "match", req.body);
-                return true;
-            default:
-                return false;
-        }
-    }
+  }
 
-    handle(req: express.Request): Promise<{}[] | {}> {
-        switch (req.query.source) {
-            case Service.LINE:
-                return this.handleLINE(req);
-            case Service.SLACK:
-                console.log(1002, "handle", req.body);
-                return this.handleSlack(req);
-            default:
-                return Promise.resolve({msg: "BuiltinHandler should ignore this request"});
-        }
+  public handle(req: express.Request): Promise<Record<string, unknown>[] | Record<string, unknown>> {
+    switch (req.query.source) {
+      case Service.LINE:
+        return this.handleLINE(req);
+      case Service.SLACK:
+        console.log(1002, "handle", req.body);
+        return this.handleSlack(req);
+      default:
+        return Promise.resolve({msg: "BuiltinHandler should ignore this request"});
     }
+  }
 
-    private handleLINE(req: express.Request): Promise<{}[]> {
-        return req.body.events.map(e => this.handleLINEEntry({req, payload: e}));
-    }
+  private handleLINE(req: express.Request): Promise<Record<string, unknown>[]> {
+    return req.body.events.map(e => this.handleLINEEntry({req, payload: e}));
+  }
 
-    private handleLINEEntry(entry: Entry): Promise<{}> {
-        const ev = entry.payload as LINE.Event;
-        // LINE Group ID Check
-        if (ev.type === LINE.EventType.MESSAGE && ev.message.type === LINE.MessageType.TEXT) {
-            if (ev.message.text.match(/^id$/i)) {
-                return this.replyLINEChatID(entry);
-            }
-        }
-        return Promise.resolve({});
+  private handleLINEEntry(entry: Entry): Promise<Record<string, unknown>> {
+    const ev = entry.payload as LINE.Event;
+    // LINE Group ID Check
+    if (ev.type === LINE.EventType.MESSAGE && ev.message.type === LINE.MessageType.TEXT) {
+      if (ev.message.text.match(/^id$/i)) {
+        return this.replyLINEChatID(entry);
+      }
     }
+    return Promise.resolve({});
+  }
 
-    private replyLINEChatID(entry: Entry): Promise<{}> {
-        const ev = entry.payload as LINE.Event;
-        if (ev.source.groupId) {
-            return this.LINEAPI.pushMessage(
-                ev.source.groupId, { type: LINE.MessageType.TEXT, text: `Chat Group ID: ${ev.source.groupId}`},
-            );
-        }
-        if (ev.source.roomId) {
-            return this.LINEAPI.pushMessage(
-                ev.source.roomId, { type: LINE.MessageType.TEXT, text: `Chat Room ID: ${ev.source.roomId}`},
-            );
-        }
-        return this.LINEAPI.pushMessage(
-            ev.source.userId, { type: LINE.MessageType.TEXT, text: `Chat User ID: ${ev.source.userId}` },
-        );
+  private replyLINEChatID(entry: Entry): Promise<Record<string, unknown>> {
+    const ev = entry.payload as LINE.Event;
+    if (ev.source.groupId) {
+      return this.LINEAPI.pushMessage(
+        ev.source.groupId, { type: LINE.MessageType.TEXT, text: `Chat Group ID: ${ev.source.groupId}`},
+      );
     }
+    if (ev.source.roomId) {
+      return this.LINEAPI.pushMessage(
+        ev.source.roomId, { type: LINE.MessageType.TEXT, text: `Chat Room ID: ${ev.source.roomId}`},
+      );
+    }
+    return this.LINEAPI.pushMessage(
+      ev.source.userId, { type: LINE.MessageType.TEXT, text: `Chat User ID: ${ev.source.userId}` },
+    );
+  }
 
-    private handleSlack(req: express.Request): Promise<{}> {
-        console.log(1003, "handleSlack", req.body, req.body.challenge);
-        if (req.body && req.body.type === Slack.CallbackType.URLVerification) {
-            return Promise.resolve({challenge: req.body.challenge});
-        }
-        return Promise.resolve({});
+  private handleSlack(req: express.Request): Promise<Record<string, unknown>> {
+    if (req.body && req.body.type === Slack.CallbackType.URLVerification) {
+      return Promise.resolve({challenge: req.body.challenge});
     }
+    return Promise.resolve({});
+  }
 }

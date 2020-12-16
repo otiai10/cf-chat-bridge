@@ -10,7 +10,7 @@ export interface BridgeConfig {
   rules: Rule[];
 }
 
-class Bridge {
+export default class Bridge {
 
   public rules: Rule[];
   private secrets: Secrets;
@@ -50,5 +50,3 @@ class Bridge {
     }
   }
 }
-
-module.exports = Bridge;

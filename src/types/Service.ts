@@ -1,5 +1,5 @@
 export enum Service {
-    LINE  = "LINE",
-    SLACK = "SLACK",
-    Unknown = "UNKNOWN",
+  LINE  = "LINE",
+  SLACK = "SLACK",
+  Unknown = "UNKNOWN",
 }

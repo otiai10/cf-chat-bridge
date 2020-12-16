@@ -4,20 +4,20 @@ import Transform from "../transform";
 import {Service} from "./Service";
 
 export interface Source {
-    service: Service;
-    group?: RegExp|string;
-    channel?: RegExp|string;
+  service: Service;
+  group?: RegExp|string;
+  channel?: RegExp|string;
 }
 
 export interface Destination {
-    service: Service;
-    channels?: string[];
-    to?: string[];
+  service: Service;
+  channels?: string[];
+  to?: string[];
 }
 
 export default interface Rule {
-    source: Source;
-    destination: Destination;
-    transforms?: Transform[];
-    pipe?: Source[];
+  source: Source;
+  destination: Destination;
+  transforms?: Transform[];
+  pipe?: Source[];
 }

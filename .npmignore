@@ -1,0 +1,5 @@
+src
+tests
+example-project
+tsconfig.json
+.travis.yml
