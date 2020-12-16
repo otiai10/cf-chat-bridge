@@ -1,6 +1,6 @@
 node_modules
 lib
 .DS_Store
-test-secret-vars.js
+# test-secret-vars.js
 .vscode
 coverage

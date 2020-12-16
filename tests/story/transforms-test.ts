@@ -29,7 +29,7 @@ describe("When custom transforms are given", () => {
   });
 });
 
-describe("When google translate transform is given", () => {
+describe.skip("When google translate transform is given", () => {
   it("should translate the text", async () => {
     const rule = require("../data/example-rules")[2];
     const h = createHandler(rule, vars)[0] as LineHandler;
