@@ -25,6 +25,7 @@ export default class BuiltinHandler implements Handler {
             case Service.LINE:
                 return true;
             case Service.SLACK:
+                console.log(1001, "match", req.body);
                 return true;
             default:
                 return false;
@@ -36,6 +37,7 @@ export default class BuiltinHandler implements Handler {
             case Service.LINE:
                 return this.handleLINE(req);
             case Service.SLACK:
+                console.log(1002, "handle", req.body);
                 return this.handleSlack(req);
             default:
                 return Promise.resolve({msg: "BuiltinHandler should ignore this request"});
@@ -75,6 +77,7 @@ export default class BuiltinHandler implements Handler {
     }
 
     private handleSlack(req: express.Request): Promise<{}> {
+        console.log(1003, "handleSlack", req.body, req.body.challenge);
         if (req.body && req.body.type === Slack.CallbackType.URLVerification) {
             return Promise.resolve({challenge: req.body.challenge});
         }
