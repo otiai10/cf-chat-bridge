@@ -3,3 +3,4 @@ lib
 .DS_Store
 test-secret-vars.js
 .vscode
+coverage
