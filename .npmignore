@@ -3,3 +3,6 @@ tests
 example-project
 tsconfig.json
 .travis.yml
+.eslintrc.yaml
+.github
+coverage

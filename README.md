@@ -14,7 +14,7 @@ Framework for **Google Cloud Functions** to bridge communications in chat servic
 # Example of your `index.js`
 
 ```javascript
-const Bridge = require("cf-chat-bridge");
+const { Bridge } = require("cf-chat-bridge");
 
 // Your secret variables, see following for more details.
 const secrets = require("./your/secrets");
@@ -27,6 +27,10 @@ const bridge = new Bridge({rules, secrets});
 // Export your endpoint as a member of module,
 // so that Google CloudFunctions can listen /foobar as an endpoint.
 exports.foobar = bridge.endpoint();
+
+// Then you can use following endpoints for Slack & LINE webhooks:
+//   - Slack: /foobar?source=SLACK
+//   - LINE:  /foobar?source=LINE
 ```
 
 # Example rules
@@ -35,41 +39,50 @@ exports.foobar = bridge.endpoint();
 module.exports = [
 
   /**
-   *  This is a rule representing one-way bridge,
-   *
-   *    LINE group → SLACK channel(s)
+   * ONE-WAY bridge: LINE group → SLACK channel(s)
    */
   {
     // From any groups of LINE in which the bot is a member
-    "source": {
-      "service": "LINE",
-      "group": /.*/
+    source: {
+      service: "LINE",
+      group: /.*/
     },
     // To "random" channel of Slack in which the bot is a member
-    "destination": {
-      "service": "Slack",
-      "channels": ["random"]
+    destination: {
+      service: "Slack",
+      channels: ["random"]
     }
   },
 
   /**
-   * This is a rule representing two-way bridge,
-   *
-   *    LINE group ↔ SLACK channel
+   * ONE-WAY bridge: Slack channel → LINE group(s)
    */
   {
-    "pipe": [
+    source: {
+      service: "Slack",
+      channel: "dev-test"
+    },
+    destination: {
+      service: "LINE",
+      to: ["C3a08fbcbd1c7c3dc4c68d42fb46bd112"],
+    },
+  },
+
+  /**
+   * BOTH-WAY bridge: LINE group ↔ SLACK channel
+   */
+  {
+    pipe: [
       {
-        "service": "LINE",
-        "group": "C3a08fbcbd1c7c3dc4c68d42fb46bd112",
+        service: "LINE",
+        group: "C3a08fbcbd1c7c3dc4c68d42fb46bd112",
       },
       {
-        "service": "SLACK",
-        "channel": "general",
+        service: "SLACK",
+        channel: "general",
       },
     ]
   },
-
 ]
 ```
 

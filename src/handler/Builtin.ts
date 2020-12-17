@@ -26,7 +26,6 @@ export default class BuiltinHandler implements Handler {
       case Service.LINE:
         return true;
       case Service.SLACK:
-        console.log(1001, "match", req.body);
         return true;
       default:
         return false;
@@ -38,7 +37,6 @@ export default class BuiltinHandler implements Handler {
       case Service.LINE:
         return this.handleLINE(req);
       case Service.SLACK:
-        console.log(1002, "handle", req.body);
         return this.handleSlack(req);
       default:
         return Promise.resolve({msg: "BuiltinHandler should ignore this request"});
