@@ -21,7 +21,7 @@ export default class API {
   }
 
   public getChannelInfo(id: string): Promise<Channel> {
-    const uri = `${API.baseURL}/channels.info`;
+    const uri = `${API.baseURL}/conversations.info`;
     const query = `token=${this.accessToken}&channel=${id}`;
     return request.get(uri + "?" + query).then(res => {
       const body = JSON.parse(res);
