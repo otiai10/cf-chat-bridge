@@ -4,11 +4,12 @@ import BuiltinHandler from "./handler/Builtin";
 import Rule from "./types/Rule";
 import Secrets from "./types/Secrets";
 import Verifier from "./verifier";
-import { Log, Logging } from "@google-cloud/logging";
+import { Logger, Severity } from "./logger";
 
 export interface BridgeConfig {
   secrets: Secrets;
   rules: Rule[];
+  logLevel?: string | string[];
 }
 
 export class Bridge {
@@ -17,13 +18,19 @@ export class Bridge {
   private secrets: Secrets;
   private verifier: Verifier;
   private handlers: Handler[] = [];
-  private lg: Log;
+  private log: Logger;
 
-  constructor({ secrets, rules }: BridgeConfig) {
+  constructor({ secrets, rules, logLevel }: BridgeConfig) {
     this.secrets = secrets;
     this.rules = rules;
     this.verifier = new Verifier(secrets);
-    this.lg = (new Logging()).log('cf-chat-bridge');
+    this.log = new Logger('cf-chat-bridge', Severity.INFO);
+    if (logLevel) {
+      this.log = (logLevel instanceof Array) ? new Logger('cf-chat-bridge', [
+        Severity[logLevel[0].toUpperCase()],
+        Severity[logLevel[logLevel.length - 1].toUpperCase()]
+      ]) : new Logger('cf-chat-bridge', Severity[logLevel.toUpperCase()]);
+    }
   }
 
   public endpoint(): (req: express.Request, res: express.Response) => any {
@@ -47,22 +54,17 @@ export class Bridge {
     }
     try {
       const handlers = this.handlers.filter(h => h.match(req));
-      this.log({
+      this.log.debug({
         message: `MATCH: ${(handlers.map(h => h.constructor.name)).join(',')}`,
         body: req.body,
-      }, { component: 'bridge' }, 'DEBUG');
+      }, 'bridge');
 
       const results = await Promise.all(handlers.map(handler => handler.handle(req)));
-      this.log({ results, query: req.query, body: req.body }, { component: 'bridge' }, 'DEBUG');
+      this.log.debug({ results, query: req.query, body: req.body }, 'bridge');
       res.status(200).json(results);
     } catch (err) {
-      this.log({ message: err.message, stack: err.stack, code: err.code }, { component: 'bridge' }, 'ERROR');
+      this.log.error({ message: err.message, stack: err.stack, code: err.code }, 'bridge');
       res.status(200).json(err);
     }
-  }
-
-  private async log(payload: any, labels: { [key: string]: string } = {}, severity = 'INFO'): Promise<any> {
-    const entry = this.lg.entry({ labels, severity }, payload);
-    return await this.lg.write(entry);
   }
 }
