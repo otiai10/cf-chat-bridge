@@ -46,29 +46,18 @@ export class Bridge {
       return;
     }
     try {
-      const results = await Promise.all(this.handlers.filter(h => h.match(req)).map(h => {
-        this.log({
-          message: `MATCH: ${(h as any).constructor.name}`,
-          handler: (h as any).constructor.name,
-          body: req.body,
-        }, { component: 'bridge' }, 'DEBUG');
-        return h.handle(req);
-      }));
-      const result = results.length === 1 ? results[0] : results;
+      const handlers = this.handlers.filter(h => h.match(req));
       this.log({
-        message: `RESULT`,
-        result,
-        query: req.query,
+        message: `MATCH: ${(handlers.map(h => h.constructor.name)).join(',')}`,
         body: req.body,
       }, { component: 'bridge' }, 'DEBUG');
+
+      const results = await Promise.all(handlers.map(handler => handler.handle(req)));
+      this.log({ results, query: req.query, body: req.body }, { component: 'bridge' }, 'DEBUG');
       res.status(200).json(results);
     } catch (err) {
-      this.log({
-        message: err.message,
-        stack: err.stack,
-        code: err.code,
-      }, { component: 'bridge' }, 'ERROR');
-      res.status(500).json(err);
+      this.log({ message: err.message, stack: err.stack, code: err.code }, { component: 'bridge' }, 'ERROR');
+      res.status(200).json(err);
     }
   }
 
