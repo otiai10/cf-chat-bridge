@@ -17,6 +17,7 @@
   "author": "otiai10",
   "license": "MIT",
   "dependencies": {
+    "@google-cloud/logging": "^9.3.0",
     "request": "^2.88.2",
     "request-promise": "^4.2.6"
   },
