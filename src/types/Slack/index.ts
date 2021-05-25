@@ -45,6 +45,9 @@ export interface Event {
   icon_url?: string;
   link_names?: boolean;
   username?: string;
+
+  // Only exist when thread replies
+  thread_ts?: string;
 }
 
 export enum ChannelType {

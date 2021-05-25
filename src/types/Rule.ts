@@ -7,6 +7,7 @@ export interface Source {
   service: Service;
   group?: RegExp|string;
   channel?: RegExp|string;
+  includeThread?: boolean;
 }
 
 export interface Destination {

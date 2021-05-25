@@ -34,6 +34,9 @@ export default class SlackHandler extends Template implements Handler {
     if (callback.event.subtype === Slack.Subtype.BOTMESSAGE) {
       return false;
     }
+    if (callback.event.thread_ts && !this.rule.source.includeThread) {
+      return false;
+    }
     return true;
   }
 
